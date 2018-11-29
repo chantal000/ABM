@@ -1,1 +1,53 @@
-dd
+governments-own [
+  planned_locations_storage
+  current_CO2_fine
+  total_subsidy_per_company
+  total_subsidy_port
+]
+
+
+to do_government_actions
+    let new_fraction_subsidy_pipeline decide_percentage_subsidy_for_pipelines
+    
+    give_subsidy_to_port
+    give_subsidy_to_companies
+    
+    increase_co2_fine
+end
+
+
+
+; for now it is just a fixed variable (set in a slider), but this can be changed later
+to-report decide_percentage_subsidy_for_pipelines
+  report fraction_subsidy_for_pipeline
+end
+
+
+
+
+; amount of money available for the port to build pipelines
+to give_subsidy_to_port
+  set total_subsidy_port (yearly_budget_in_millions * fraction_subsidy_for_pipeline)
+  show "total subsidy port" 
+  show total_subsidy_port
+end
+
+
+; we can give the same price for every company or not
+; for now: all money available for companies will be split equally over the companies, 
+; then the companies can decide to use it or not (if not the money will just be unused)
+
+to give_subsidy_to_companies
+  set total_subsidy_per_company ((yearly_budget_in_millions * (1 - fraction_subsidy_for_pipeline) ) / number_of_companies)
+  show "total subsidy per company" 
+  show total_subsidy_per_company
+end
+
+
+; sets the new co2 price based on some list of values (right now i just made up some list)
+to increase_co2_fine
+  set current_co2_fine item ticks data_list_co2_fines
+  
+  show "current co2 fine"
+  show current_co2_fine
+end

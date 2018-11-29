@@ -1,18 +1,21 @@
 __includes[
-
+  "main.nls"
   "government.nls"
   "port.nls"
   "companies.nls"
   "infrastructure.nls"
-  "capture_technology.nls"
+  "co2_storage_locations.nls"
   "environment.nls"
+  "output_data.nls"
 ]
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-647
-448
+283
+34
+720
+472
 -1
 -1
 13.0
@@ -29,11 +32,137 @@ GRAPHICS-WINDOW
 16
 -16
 16
-0
-0
+1
+1
 1
 ticks
 30.0
+
+SLIDER
+19
+67
+193
+100
+number_of_companies
+number_of_companies
+0
+50
+10.0
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+20
+158
+83
+191
+NIL
+setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+100
+158
+163
+191
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+39
+245
+258
+278
+yearly_budget_in_millions
+yearly_budget_in_millions
+0
+1000
+100.0
+50
+1
+NIL
+HORIZONTAL
+
+SLIDER
+46
+313
+258
+346
+fraction_subsidy_for_pipeline
+fraction_subsidy_for_pipeline
+0
+1
+0.75
+0.01
+1
+NIL
+HORIZONTAL
+
+SLIDER
+37
+387
+258
+420
+percentage_storage_on_shore
+percentage_storage_on_shore
+0
+100
+100.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+38
+442
+215
+475
+percentage_extensible
+percentage_extensible
+0
+100
+0.0
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+178
+158
+241
+191
+NIL
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -179,6 +308,26 @@ Circle -7500403 true true 8 8 285
 Circle -16777216 true false 60 75 60
 Circle -16777216 true false 180 75 60
 Polygon -16777216 true false 150 168 90 184 62 210 47 232 67 244 90 220 109 205 150 198 192 205 210 220 227 242 251 229 236 206 212 183
+
+factory
+false
+0
+Rectangle -7500403 true true 76 194 285 270
+Rectangle -7500403 true true 36 95 59 231
+Rectangle -16777216 true false 90 210 270 240
+Line -7500403 true 90 195 90 255
+Line -7500403 true 120 195 120 255
+Line -7500403 true 150 195 150 240
+Line -7500403 true 180 195 180 255
+Line -7500403 true 210 210 210 240
+Line -7500403 true 240 210 240 240
+Line -7500403 true 90 225 270 225
+Circle -1 true false 37 73 32
+Circle -1 true false 55 38 54
+Circle -1 true false 96 21 42
+Circle -1 true false 105 40 32
+Circle -1 true false 129 19 42
+Rectangle -7500403 true true 14 228 78 270
 
 fish
 false

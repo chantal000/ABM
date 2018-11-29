@@ -1,1 +1,30 @@
-dd
+ports-own [
+  per_unit_price_CO2_storage
+  
+  current_pipeline_properties
+  pipeline_full?
+  
+  
+  
+]
+
+
+
+
+
+to do_port_actions
+  build_pipeline
+  set_co2_storage_price
+end
+
+
+
+to build_pipeline
+  
+end
+
+
+
+to set_co2_storage_price
+  
+end
