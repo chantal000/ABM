@@ -11,6 +11,10 @@ capture_technologies-own [
 ; returns the maximal capture capacity of a single CCS storage in that year
 ; uses the compoun interest fomula
 to-report current_max_capture_capacity
-  
-  
+  ; becomes 10% bigger per year
+  report initial_capacity_capture_technology * (1.1 ^ ticks )
+end
+
+to-report current_price_capture_technology
+  report initial_price_capture_technology * (0.9 ^ ticks)
 end

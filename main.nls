@@ -6,6 +6,7 @@ breed [governments government]
 breed [ports port]
 breed [companies company]
 breed [capture_technologies capture_technology]
+breed [storages storage]
 directed-link-breed [pipelines pipeline]
 
 
@@ -73,6 +74,7 @@ end
 
 to setup-turtles
   set-default-shape companies "factory"
+  set-default-shape capture-technologies "box"
   
   ;create one government and one port of rotterdam turtle
   create-governments 1 [setxy random-xcor random-ycor]

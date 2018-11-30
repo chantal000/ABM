@@ -7,6 +7,7 @@ governments-own [
 
 
 to do_government_actions
+  ; decide on subsidy split for that year
     let new_fraction_subsidy_pipeline decide_percentage_subsidy_for_pipelines
     
     give_subsidy_to_port
