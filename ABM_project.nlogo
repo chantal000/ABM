@@ -4,11 +4,11 @@ __includes[
   "port.nls"
   "companies.nls"
   "infrastructure.nls"
-  "co2_storage_locations.nls"
+  "capture_technology.nls"
   "environment.nls"
   "output_data.nls"
+  "storage.nls"
 ]
-
 
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -47,7 +47,7 @@ number_of_companies
 number_of_companies
 0
 50
-10.0
+0.0
 1
 1
 NIL
@@ -96,7 +96,7 @@ yearly_budget_in_millions
 yearly_budget_in_millions
 0
 1000
-100.0
+0.0
 50
 1
 NIL
@@ -111,7 +111,7 @@ fraction_subsidy_for_pipeline
 fraction_subsidy_for_pipeline
 0
 1
-0.75
+0.0
 0.01
 1
 NIL
@@ -126,7 +126,7 @@ percentage_storage_on_shore
 percentage_storage_on_shore
 0
 100
-100.0
+0.0
 1
 1
 NIL
@@ -165,41 +165,6 @@ NIL
 1
 
 @#$#@#$#@
-## WHAT IS IT?
-
-(a general understanding of what the model is trying to show or explain)
-
-## HOW IT WORKS
-
-(what rules the agents use to create the overall behavior of the model)
-
-## HOW TO USE IT
-
-(how to use the model, including a description of each of the items in the Interface tab)
-
-## THINGS TO NOTICE
-
-(suggested things for the user to notice while running the model)
-
-## THINGS TO TRY
-
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
-
-## EXTENDING THE MODEL
-
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
-
-## NETLOGO FEATURES
-
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
-
-## RELATED MODELS
-
-(models in the NetLogo Models Library and elsewhere which are of related interest)
-
-## CREDITS AND REFERENCES
-
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
 @#$#@#$#@
 default
 true

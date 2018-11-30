@@ -1,0 +1,16 @@
+capture_technologies-own [
+  capture_capacity_ton_per_year       ; will be provided
+  cost_to_build                       ; will be provided
+  electricity_use
+  
+  cost_to_use                         ; cost in that current year to use the CCS (based on the electricity price; we assume no maintenance etc)
+  
+]
+
+
+; returns the maximal capture capacity of a single CCS storage in that year
+; uses the compoun interest fomula
+to-report current_max_capture_capacity
+  
+  
+end

@@ -4,11 +4,11 @@ __includes[
   "port.nls"
   "companies.nls"
   "infrastructure.nls"
-  "co2_storage_locations.nls"
+  "capture_technology.nls"
   "environment.nls"
   "output_data.nls"
+  "storage.nl
 ]
-
 
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -47,7 +47,7 @@ number_of_companies
 number_of_companies
 0
 50
-10.0
+0.0
 1
 1
 NIL
@@ -96,7 +96,7 @@ yearly_budget_in_millions
 yearly_budget_in_millions
 0
 1000
-100.0
+0.0
 50
 1
 NIL
@@ -111,7 +111,7 @@ fraction_subsidy_for_pipeline
 fraction_subsidy_for_pipeline
 0
 1
-0.75
+0.0
 0.01
 1
 NIL
@@ -126,7 +126,7 @@ percentage_storage_on_shore
 percentage_storage_on_shore
 0
 100
-100.0
+0.0
 1
 1
 NIL

@@ -33,14 +33,20 @@ to do_company_actions
   ifelse decide_to_join_pipeline? [
     ; do stuff when the company decides to join (we have to create a link with the storage location)
     ; only join when we it economcally makes sense
+    ; add costs to industry costs for joining ccs
+    ; add amount of used subsidy to the total subsidy used by companies
   ]
   [
     ; do stuff when the company does not join
     ; increase tons_co2_stored_per_year by the amount that the new technology can store
   ]
   
-  ; add to the total co2 production
+  ; new co2 emitted to air: add to the total co2 production
   set co2_emitted_to_air (co2_emitted_to_air + tons_co2_produced_per_year - tons_co2_stored_per_year)
+  
+  ; new amount of co2 stored
+  set co2_stored (co2_stored + tons_co2_stored_per_year)
+  
   
 end
 
