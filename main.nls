@@ -74,7 +74,7 @@ end
 
 to setup-turtles
   set-default-shape companies "factory"
-  set-default-shape capture-technologies "box"
+  set-default-shape capture_technologies "box"
   
   ;create one government and one port of rotterdam turtle
   create-governments 1 [setxy random-xcor random-ycor]
