@@ -30,7 +30,7 @@ companies-own [
 
 to do_company_actions
   
-  ifelse decide_to_join_pipeline? [
+  ifelse join_pipeline? [
     ; do stuff when the company decides to join (we have to create a link with the storage location)
     ; only join when we it economcally makes sense
     ; add costs to industry costs for joining ccs
@@ -54,7 +54,17 @@ end
 
 ;need to implement some intelligence/decision alg, for now random decision
 ; needs to be decided based on capex, opex with or without capture, internal ROI
-to-report decide_to_join_pipeline?
+to-report join_pipeline?
+  let x random 100
+  ifelse x > 50 
+    [report true]
+    [report false]
+end
+
+
+; should return true if we want to build one this year, false if not
+; for now: random
+to-report build_capture_technology?
   let x random 100
   ifelse x > 50 
     [report true]

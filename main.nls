@@ -13,16 +13,25 @@ directed-link-breed [pipelines pipeline]
 ; define all the gloabl variables (includes the KPIs)
 ; some global variables are defined in the interface
 globals [
+  ;provided numbers
+  initial_capacity_capture_technology
+  initial_price_capture_technology
+  electricity_price
+  
+  ;data files
+  data_list_co2_fines
+  data_list_oil_prices
+  data_list_locations
+  data_list_industry
+  data_list_costs
+  
+  ;KPI to be tracked
+  electricty_used
   co2_emitted_to_air
   co2_stored
   industry_cost_to_store_co2
   subsidy_to_pipelines
   subsidy_to_companies
-  electricity_price
-  electricty_used
-  data_list_co2_fines
-  initial_capacity_capture_technology
-  initial_price_capture_technology
 ]
 
 
@@ -34,6 +43,14 @@ to setup
   clear-all
   setup-turtles
   
+  print ""
+  print "new set-up"
+  
+  ; load all the provided data
+  load_data
+  
+  print "done loading data files"
+  
   ;initialize all the global variables
   set co2_emitted_to_air 0
   set co2_stored 0
@@ -42,13 +59,14 @@ to setup
   set subsidy_to_companies 0
   set electricty_used 0
   
-  ; needs to changed to the number that will be provided
-  set electricity_price 200
+  
+  set electricity_price (item  1 item 6 data_list_costs)
+  
+  ; needs to changed to the number that will be provided (its not provided??)
   set initial_capacity_capture_technology 20
   set initial_price_capture_technology 10
   
-  ; load all the provided data
-  load_data
+  
   
   reset-ticks
 end
@@ -74,7 +92,7 @@ end
 
 to setup-turtles
   set-default-shape companies "factory"
-  set-default-shape capture-technologies "box"
+  set-default-shape capture_technologies "box"
   
   ;create one government and one port of rotterdam turtle
   create-governments 1 [setxy random-xcor random-ycor]
@@ -87,7 +105,7 @@ to setup-turtles
   ;create companies
   create-companies number_of_companies [ 
     setxy random-xcor random-ycor
-    set size 3
+    set size 2
     set color blue ]
 end
 
@@ -96,10 +114,24 @@ end
 ; loads the list of co2 fines. right now the list is made up
 ; loads list of all possible locations for storages
 to load_data
-  set data_list_co2_fines csv:from-file "co2_fine.csv"
-  print data_list_co2_fines
   
-  ; load location data
+  set data_list_co2_fines csv:from-file "co2_price.csv"
+  set data_list_oil_prices csv:from-file "oil_price.csv"
+  set data_list_locations csv:from-file "locations.csv"
+  set data_list_industry csv:from-file "industry.csv"
+  set data_list_costs csv:from-file "costs.csv"
+  
+;  print item 1 item 2 data_list_co2_fines
 end
+
+
+
+
+
+
+
+
+
+
 
 

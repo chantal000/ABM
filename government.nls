@@ -1,6 +1,9 @@
 governments-own [
-  planned_locations_storage
+  planned_storage_location
+  location_number
+  
   current_CO2_fine
+  
   total_subsidy_per_company
   total_subsidy_port
 ]
@@ -47,8 +50,19 @@ end
 
 ; sets the new co2 price based on some list of values (right now i just made up some list)
 to increase_co2_fine
-  set current_co2_fine item ticks data_list_co2_fines
+  set current_co2_fine item 1 item (ticks + 2) data_list_co2_fines
+  
+;  print item 1 item 2 data_list_co2_fines
   
   show "current co2 fine"
   show current_co2_fine
+end
+
+
+to announce_new_storage_location
+  ; takes the whole row of the file
+  set planned_storage_location item (location_number + 1) data_list_locations
+  
+  ; increase the counter for next time
+  set location_number (location_number + 1)
 end

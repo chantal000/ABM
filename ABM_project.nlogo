@@ -9,7 +9,6 @@ __includes[
   "output_data.nls"
   "storage.nls"
 ]
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 283
@@ -47,7 +46,7 @@ number_of_companies
 number_of_companies
 0
 50
-0.0
+25.0
 1
 1
 NIL
@@ -88,16 +87,16 @@ NIL
 1
 
 SLIDER
-39
-245
-258
-278
+20
+102
+239
+135
 yearly_budget_in_millions
 yearly_budget_in_millions
 0
-1000
-0.0
-50
+100
+15.0
+5
 1
 NIL
 HORIZONTAL

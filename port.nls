@@ -18,7 +18,7 @@ to do_port_actions
 end
 
 
-
+;take one year to build a pipeline from companies to a storage location
 to build_pipeline
   
   ; if the port builds a pipeline that year, add the government subsidy to the total subsidy used by port
@@ -27,7 +27,8 @@ to build_pipeline
 end
 
 
-
+;price should recover investment of payback period of 15 years
+; for now: random
 to set_co2_storage_price
-  
+  set per_unit_price_CO2_storage random 10
 end
