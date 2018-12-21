@@ -1,10 +1,18 @@
 ports-own [
-  per_unit_price_CO2_storage
+  yearly_per_unit_price_CO2_storage
   
-  current_pipeline_properties
-  pipeline_full?
+  planned_storage_location
+  location_name
+  location_number
   
+  fixed?
   
+  pipeline_building_costs
+  full_pipeline_capacity                ; in t co2 per year
+  pipeline_capacity_left_to_fill        ; in t co2 per year
+  cost_for_companies_per_t_co2          ; in euro per year
+  
+  recovery_period 
   
 ]
 
@@ -13,22 +21,143 @@ ports-own [
 
 
 to do_port_actions
+;  if pipeline_full? [
+;    build_pipeline
+;    announce_new_storage_location
+    
+;  ]
+
+  
   build_pipeline
-  set_co2_storage_price
+  ;
 end
+
+
+
+
 
 
 ;take one year to build a pipeline from companies to a storage location
 to build_pipeline
   
   ; if the port builds a pipeline that year, add the government subsidy to the total subsidy used by port
+  ; we need to create a link from every company to the storage location
+  
+;  ask one-of storages [create-pipeline-from one-of companies]
+  
+  
   
   
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+to announce_new_storage_location
+  ; takes the whole row of the file
+  set planned_storage_location item (location_number + 1) data_list_locations
+  
+  
+  
+  set location_name item 0 planned_storage_location
+  show "new location for storage"
+  show location_name
+  
+  ; increase the counter for next time
+  set location_number (location_number + 1)
+  
+  ;pipeline capacity in tons of co2 (not mega tons!)
+  set full_pipeline_capacity ((item 3 planned_storage_location) * 1000000)
+;  show full_pipeline_capacity
+  
+  set pipeline_capacity_left_to_fill (full_pipeline_capacity)
+;  show pipeline_capacity_left_to_fill
+  
+  ; costs = onshore km * costs per onshore km + offshore km * costs per offshore km
+  ; costs are in euros (not million euros!!)
+  ; these are the costs the port will need to pay
+  set pipeline_building_costs (    (item 1 planned_storage_location) * ((item 4 planned_storage_location) * 1000000) +
+                                   (item 2 planned_storage_location) * ((item 5 planned_storage_location) * 1000000))
+;  show "pipeline building costs in euros"
+;  show pipeline_building_costs
+  
+  ; set the pipeline to be fixed or extensible
+  set fixed? decide_if_fixed?
+;  show "fixed?"
+  ifelse fixed? [show "fixed pipeline"] [show "extensible pipeline"]
+
+  ; set the price that companies need to pay to store 1 t of co2
+  set cost_for_companies_per_t_co2 (decide_co2_storage_price)
+  
+  ;create a new storage place on the map
+  hatch-storages 1 [
+    show-turtle 
+    setxy max-pxcor - 1 random-ycor
+    set size 2
+  ]
+  
+end
+
+
+
+
+; check if pipeline reached its desired capacity so that we can start building
+to-report pipeline_full?
+  ifelse (1 - (pipeline_capacity_left_to_fill / full_pipeline_capacity) > (percentage_of_pipeline_filled_needed_to_start_building / 100)) 
+  [report true]
+  [report false]
+end
+
+
+
+to-report decide_if_fixed?
+  ; if our random number is smaller than our specified percentage then it will be a fixed [pipeline, else an extendable one
+  ifelse (random 100 < percentage_fixed) 
+     [report true]
+     [report false]
+end
+
+
+
 
 
 ;price should recover investment of payback period of 15 years
 ; for now: random
-to set_co2_storage_price
-  set per_unit_price_CO2_storage random 10
+to-report decide_co2_storage_price
+  
+  let temp_subsidy (one-of [total_subsidy_port] of governments)
+;  show "subsidy for port in million euros"
+;  show temp_subsidy
+  
+  ; we assume here the worst case scenario: only one company will join and pay the connection costs
+  let total_cost_to_recover (pipeline_building_costs - connection_costs - temp_subsidy * 1000000)
+;  show "total cost to recover in euros"
+;  show total_cost_to_recover
+  
+  ; divide over the 15 years recovery period
+  let costs_to_recover_per_year (total_cost_to_recover / recovery_period )
+;  show "costs to recover per year in euros"
+;  show costs_to_recover_per_year
+  
+  ; we assume a conservative port: they set the break-even point when exactly the minimum capacity is reached
+  ; everythings else will be profit
+  let minimial_capacity_to_be_used (full_pipeline_capacity * percentage_of_pipeline_filled_needed_to_start_building / 100)
+;  show "minimal capacity to be used in tons"
+;  show minimial_capacity_to_be_used
+  
+  set yearly_per_unit_price_CO2_storage (costs_to_recover_per_year / minimial_capacity_to_be_used)
+  type "(port): yearly price per unit co2 in euros:  " type yearly_per_unit_price_CO2_storage  type "\n"
+  
+  
+  report yearly_per_unit_price_CO2_storage
 end
+

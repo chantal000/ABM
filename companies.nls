@@ -1,23 +1,21 @@
 companies-own [
   payback_period
   
-  per_unit_price_CO2_storage
-  per_unit_price_CO2_emitted
+  
   total_yearly_price_CO2_storage
   total_yearly_price_CO2_emitted
   
-  per_unit_price_electricity
-  per_unit_price_oil
-  total_price_electricity
-  total_price_CO2_oil
+  total_yearly_price_electricity
+  total_yearly_CO2_fine
   
-  capture_technology
   
   oil_needed
-  electricity needed
+  electricity_needed
   
-  tons_co2_produced_per_year
-  tons_co2_stored_per_year
+  tons_co2_produced_this_company
+  tons_co2_stored_this_company
+  tons_co2_emitted_this_company
+  
   
   
   
@@ -30,22 +28,22 @@ companies-own [
 
 to do_company_actions
   
-  ifelse join_pipeline? [
-    ; do stuff when the company decides to join (we have to create a link with the storage location)
-    ; only join when we it economcally makes sense
-    ; add costs to industry costs for joining ccs
-    ; add amount of used subsidy to the total subsidy used by companies
-  ]
-  [
-    ; do stuff when the company does not join
-    ; increase tons_co2_stored_per_year by the amount that the new technology can store
-  ]
+  ; calculate the amount of co2 in tons this company creates this year
+;  set tons_co2_produced_this_company (oil_needed * co2_per_ton_oil)
+ 
+  decide_whether_to_join_pipeline
   
-  ; new co2 emitted to air: add to the total co2 production
-  set co2_emitted_to_air (co2_emitted_to_air + tons_co2_produced_per_year - tons_co2_stored_per_year)
-  
-  ; new amount of co2 stored
-  set co2_stored (co2_stored + tons_co2_stored_per_year)
+;  ifelse join_pipeline? [
+;    ; do stuff when the company decides to join (we have to create a link with the storage location)
+;    ; only join when we it economcally makes sense
+;    ; add costs to industry costs for joining ccs
+;    ; add amount of used subsidy to the total subsidy used by companies
+;  ]
+;  [
+;    ; do stuff when the company does not join
+;    ; increase tons_co2_stored_this_company by the amount that the new technology can store
+;  ]
+;  
   
   
 end
@@ -54,11 +52,47 @@ end
 
 ;need to implement some intelligence/decision alg, for now random decision
 ; needs to be decided based on capex, opex with or without capture, internal ROI
-to-report join_pipeline?
-  let x random 100
-  ifelse x > 50 
-    [report true]
-    [report false]
+to decide_whether_to_join_pipeline
+  
+  let available_capacity ([pipeline_capacity_left_to_fill] of one-of ports)
+  
+  ; we need to calculate the maximum capture capacity that this company could consider this time
+  ; this is limited either by the maximum storage capacity available that this company could build,
+  ; the capacity left to fill in the pipeline or the tons of co2 that this company still emits
+  ; we pick the highest capacity here (numbers to be compared are in t) --> convert to Mt
+  let temp_max_capture_capacity ((min(list available_capacity   tons_co2_emitted_this_company   max_capacity_capture_technology)) / 1000000)
+  
+  let opex_pipeline 0
+  
+  ; what happens if its a fixed pipeline
+  ifelse [fixed?] of one-of ports 
+  [set opex_pipeline (opex_pipeline_fixed)]
+  [set opex_pipeline (opex_pipeline_fixed)]
+  
+  
+  
+  ; how to decide if its an extensible pipeline
+    ; we create an empty list that will store all the possible capacities for the storage (from 0 to temp_max_capture_capacity)
+    let list_capacity_and_costs []
+    
+    ;we create a counter variable to keep track of the current capture capacity being tested (value in t)
+    let c 0
+    
+    ; loop over all the options that are available (in steps of 1 Mt capture capacity)
+    while [c <= temp_max_capture_capacity] [
+      ; capex = connection costs to pipeline (fixed) + capex for the capture technology dependent on capacity required
+      let capex (connection_costs + price_capture_technology_per_ton_co2 * c)
+    type "capex " type capex type "\n"
+    
+      ; opex = pipeline usage costs + storage usage costs + price electricty needed to operate capture technology
+      let opex (1)
+      
+      
+      
+      set c (c + 1000000)    ;increase counter by 1 Mt
+    ]
+    
+
 end
 
 
@@ -69,4 +103,23 @@ to-report build_capture_technology?
   ifelse x > 50 
     [report true]
     [report false]
+end
+
+to-report calculate_total_co2_produced_by_this_company
+  ; calculate the amount of co2 in tons this company creates this year
+  set tons_co2_produced_this_company (oil_needed * co2_per_ton_oil)
+;  show tons_co2_produced_this_company
+  report tons_co2_produced_this_company
+end
+
+to-report calculate_total_co2_emitted_by_this_company
+  set tons_co2_emitted_this_company (tons_co2_produced_this_company - tons_co2_stored_this_company)
+;  show tons_co2_emitted_this_company
+  report tons_co2_emitted_this_company
+end 
+
+; for now no storage --> NEEDS TO BE CHANGED LATER
+to-report calculate_total_co2_stored_by_this_company
+  set tons_co2_stored_this_company 0
+  report tons_co2_stored_this_company
 end

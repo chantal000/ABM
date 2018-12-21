@@ -14,9 +14,18 @@ directed-link-breed [pipelines pipeline]
 ; some global variables are defined in the interface
 globals [
   ;provided numbers
-  initial_capacity_capture_technology
-  initial_price_capture_technology
-  electricity_price
+  max_capacity_capture_technology      ; in Mt Co2
+  price_capture_technology_per_ton_co2     ; in  EUR per t Co2
+  electricity_price                        ; in EUR per ton CO2
+  co2_per_ton_oil
+  min_oil_demand                           ; every company will be given a random oil demand between the min and max value
+  max_oil_demand
+  connection_costs                         ; costs per company to get connected to the pipeline 
+  opex_pipeline_extensible                 ; cost to use the pipeline in EUR / t CO2 if extensible
+  opex_pipeline_fixed                      ; cost to use the pipeline in EUR / t CO2 if fixed
+  current_CO2_fine
+  total_subsidy_companies_per_ton_co2
+  total_subsidy_port
   
   ;data files
   data_list_co2_fines
@@ -27,64 +36,73 @@ globals [
   
   ;KPI to be tracked
   electricty_used
-  co2_emitted_to_air
-  co2_stored
-  industry_cost_to_store_co2
-  subsidy_to_pipelines
-  subsidy_to_companies
+  total_system_co2_produced
+  total_system_co2_emitted_to_air
+  total_system_co2_stored
+  total_system_industry_cost_to_store_co2
+  total_system_subsidy_to_pipelines
+  total_system_subsidy_to_companies
 ]
 
 
+; loads list of all possible locations for storages
+to load_data
+  set data_list_co2_fines csv:from-file "co2_price.csv"
+  set data_list_oil_prices csv:from-file "oil_price.csv"
+  set data_list_locations csv:from-file "locations.csv"
+  set data_list_industry csv:from-file "industry.csv"
+  set data_list_costs csv:from-file "costs.csv"
+end
 
 
 
 
 to setup 
   clear-all
-  setup-turtles
+  reset-ticks
   
   print ""
   print "new set-up"
   
   ; load all the provided data
   load_data
-  
   print "done loading data files"
   
   ;initialize all the global variables
-  set co2_emitted_to_air 0
-  set co2_stored 0
-  set industry_cost_to_store_co2 0
-  set subsidy_to_pipelines 0
-  set subsidy_to_companies 0
+  ; all variables are per year and have to be reset at the beginning of every tick
+  set total_system_co2_produced 0
+  set total_system_co2_emitted_to_air 0
+  set total_system_co2_stored 0
+  set total_system_industry_cost_to_store_co2 0
+  set total_system_subsidy_to_pipelines 0
+  set total_system_subsidy_to_companies 0
   set electricty_used 0
   
-  
   set electricity_price (item  1 item 6 data_list_costs)
+  set co2_per_ton_oil (item 1 item 4 data_list_industry)    ; tons of co2 per ton oil
+  
   
   ; needs to changed to the number that will be provided (its not provided??)
-  set initial_capacity_capture_technology 20
-  set initial_price_capture_technology 10
+  set max_capacity_capture_technology 5 * 1000000      ; t per year
+  set price_capture_technology_per_ton_co2 (item  1 item 1 data_list_costs)
+  set connection_costs (item 1 item 3 data_list_costs) * 1000000
+  set min_oil_demand ((item 1 item 2  data_list_industry) * 1000000)
+  set max_oil_demand ((item 1 item 3  data_list_industry) * 1000000)
+  set opex_pipeline_extensible (item  1 item 4 data_list_costs)
+  set opex_pipeline_fixed (opex_pipeline_extensible * (item  1 item 5 data_list_costs) / 100)
   
   
   
-  reset-ticks
-end
+  setup-turtles
+  
+  ;add up all the amounts of co2 produced and emmited by every company at the beginning of the tick
+  ask companies [ 
+    set total_system_co2_produced (calculate_total_co2_produced_by_this_company)    
+    set total_system_co2_emitted_to_air (calculate_total_co2_emitted_by_this_company)
+    
+  ]
 
-
-to go
-  ; runs from 2018 until 2050
-  if ticks >= 33 [stop]
   
-  ; electricty price set by external environment = old electricty price decreased by 5% per year
-  set electricity_price electricity_price * 0.95
-  
-  ask governments [do_government_actions]
-  ask ports [do_port_actions]
-  ask companies [do_company_actions]
-  
-  
-  tick
 end
 
 
@@ -93,36 +111,79 @@ end
 to setup-turtles
   set-default-shape companies "factory"
   set-default-shape capture_technologies "box"
+  set-default-shape storages "co2"
   
   ;create one government and one port of rotterdam turtle
   create-governments 1 [setxy random-xcor random-ycor]
-  create-ports 1 [setxy random-xcor random-ycor]
+  create-ports 1 [
+    setxy random-xcor random-ycor
+    set recovery_period 15
+  ]
   
   ;the turtles should be invisible
   ask governments [hide-turtle]
-  ask ports [hide-turtle]
+  ask ports [
+    hide-turtle
+    announce_new_storage_location
+;    show item (location_number) data_list_locations
+  ]
   
   ;create companies
   create-companies number_of_companies [ 
-    setxy random-xcor random-ycor
+    setxy (0.1 + 0.7 * random max-pxcor) (random-ycor)
     set size 2
-    set color blue ]
+    set color blue 
+    
+    set payback_period ((random 20) + 1)                                                   ; random number between 1 and 20 years
+    set oil_needed ((random (max_oil_demand - min_oil_demand)) + min_oil_demand)           ; oil demand for that company in tons per year
+  ]
+  
+  print "ready to go"
 end
 
 
 
-; loads the list of co2 fines. right now the list is made up
-; loads list of all possible locations for storages
-to load_data
+
+to go
+  ; runs from 2019 until 2050
+  if ticks > 32 [stop]
   
-  set data_list_co2_fines csv:from-file "co2_price.csv"
-  set data_list_oil_prices csv:from-file "oil_price.csv"
-  set data_list_locations csv:from-file "locations.csv"
-  set data_list_industry csv:from-file "industry.csv"
-  set data_list_costs csv:from-file "costs.csv"
+  ; electricty price set by external environment = old electricty price decreased by 5% per year
+  set electricity_price (electricity_price * 0.95)
   
-;  print item 1 item 2 data_list_co2_fines
+  ; maximum capture technology capacity increases by 10% per year
+  set max_capacity_capture_technology (max_capacity_capture_technology * 1.1)
+  
+  ; price for the capture technology decreases every year by 10%
+  set price_capture_technology_per_ton_co2 (price_capture_technology_per_ton_co2 * 0.9)
+  
+  
+  print "total co2 system produced"
+  print total_system_co2_produced
+  
+  print "total system co2 emitted"
+  print total_system_co2_emitted_to_air
+  
+  ask governments [do_government_actions]
+  ask ports [do_port_actions]
+  ;ask companies [do_company_actions]
+  
+  
+  print ""
+  print ""
+  print ""
+  print ""
+  
+  
+  tick
 end
+
+
+
+
+
+
+
 
 
 

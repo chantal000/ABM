@@ -13,8 +13,8 @@ __includes[
 GRAPHICS-WINDOW
 283
 34
-720
-472
+694
+446
 -1
 -1
 13.0
@@ -24,13 +24,13 @@ GRAPHICS-WINDOW
 1
 1
 0
+0
+0
 1
-1
-1
--16
-16
--16
-16
+0
+30
+-30
+0
 1
 1
 1
@@ -44,7 +44,7 @@ SLIDER
 100
 number_of_companies
 number_of_companies
-0
+1
 50
 25.0
 1
@@ -102,10 +102,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-46
-313
-258
-346
+21
+290
+233
+323
 fraction_subsidy_for_pipeline
 fraction_subsidy_for_pipeline
 0
@@ -117,30 +117,15 @@ NIL
 HORIZONTAL
 
 SLIDER
-37
-387
-258
-420
-percentage_storage_on_shore
-percentage_storage_on_shore
+22
+328
+199
+361
+percentage_fixed
+percentage_fixed
 0
 100
-0.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-38
-442
-215
-475
-percentage_extensible
-percentage_extensible
-0
-100
-0.0
+100.0
 1
 1
 NIL
@@ -162,6 +147,41 @@ NIL
 NIL
 NIL
 1
+
+TEXTBOX
+21
+34
+247
+79
+These values are provided to us, but we can change them here if we want to
+12
+102.0
+1
+
+TEXTBOX
+22
+255
+252
+286
+These are values of which we want to investigate their effect on the outcome
+12
+0.0
+1
+
+SLIDER
+22
+377
+252
+410
+percentage_of_pipeline_filled_needed_to_start_building
+percentage_of_pipeline_filled_needed_to_start_building
+0
+100
+70.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 @#$#@#$#@
@@ -231,6 +251,18 @@ false
 0
 Circle -7500403 true true 0 0 300
 Circle -16777216 true false 30 30 240
+
+co2
+false
+0
+Circle -13840069 true false 0 0 300
+Circle -16777216 true false 15 15 270
+Circle -13840069 true false 28 88 122
+Rectangle -16777216 true false 105 75 165 225
+Circle -16777216 true false 60 120 60
+Circle -13840069 true false 103 88 122
+Circle -16777216 true false 135 120 60
+Polygon -13840069 true false 210 180 225 165 240 165 255 180 255 195 225 210 255 210 255 225 210 225 210 210 240 195 240 180 225 180 210 180
 
 cow
 false
