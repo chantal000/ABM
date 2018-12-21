@@ -134,12 +134,12 @@ end
 ; for now: random
 to-report decide_co2_storage_price
   
-  let temp_subsidy (one-of [total_subsidy_port] of governments)
+;  let temp_subsidy (one-of [total_subsidy_port] of governments)
 ;  show "subsidy for port in million euros"
 ;  show temp_subsidy
   
   ; we assume here the worst case scenario: only one company will join and pay the connection costs
-  let total_cost_to_recover (pipeline_building_costs - connection_costs - temp_subsidy * 1000000)
+  let total_cost_to_recover (pipeline_building_costs - connection_costs - total_subsidy_port * 1000000)
 ;  show "total cost to recover in euros"
 ;  show total_cost_to_recover
   

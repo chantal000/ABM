@@ -59,6 +59,7 @@ to decide_whether_to_join_pipeline
   let subsidy 0
   let yearly_saved_fines 0
   let profit 0
+  
  
   
   let opex_pipeline 0
@@ -79,18 +80,22 @@ to decide_whether_to_join_pipeline
   ; we create an empty list that will store all the possible capacities for the storage (from 0 to temp_max_capture_capacity)
   ; then we add the entry for c=0 --> the cost will be 0 compared to usual, since we do not do anything
   let list_capacity_and_costs []
-  set list_capacity_and_costs lput (list 0 0) list_capacity_and_costs 
+;  set list_capacity_and_costs lput (list 0 0) list_capacity_and_costs 
+  set list_capacity_and_costs lput 0 list_capacity_and_costs 
+  
+  let list_capacity_and_costs2[]
+  set list_capacity_and_costs2 lput 0 list_capacity_and_costs2
     
   ;we create a counter variable to keep track of the current capture capacity being tested (value in t)
-  let c 1000000
+  let c 500000
 ;  type "c "type c type "\n"
     
+;  
+;  print ""
+;  print ""
   
-  print ""
-  print ""
   
-  
-  ; loop over all the options that are available (in steps of 1 Mt capture capacity)
+  ; loop over all the options that are available (in steps of 0.5 Mt capture capacity)
   while [c <= temp_max_capture_capacity] [
       ; capex = connection costs to pipeline (fixed) + capex for the capture technology dependent on capacity required
       set capex (connection_costs + price_capture_technology_per_ton_co2 * c)
@@ -110,30 +115,57 @@ to decide_whether_to_join_pipeline
       set profit (- capex + subsidy + payback_period * (yearly_saved_fines - opex))
 ;     type "profit "type profit type "\n" 
     
-      set list_capacity_and_costs lput (list c profit) list_capacity_and_costs
+      set list_capacity_and_costs lput c  list_capacity_and_costs
+      set list_capacity_and_costs2 lput profit list_capacity_and_costs2
+    
+;      set list_capacity_and_costs lput (list c profit) list_capacity_and_costs
 ;     print list_capacity_and_costs
     
     
 ;    print ""
 ;    print ""
     
-      set c (c + 1000000)    ;increase counter by 1 Mt
+      set c (c + 500000)    ;increase counter by 1 Mt
   ]
   
   print list_capacity_and_costs  
+  print list_capacity_and_costs2
+  
 
+  ; we need to take the highest profit. we take the c (capacity) for which that highest profit is reached
+  ; after that we can build a capture techology with that optimal capacity
+  let index (position (max list_capacity_and_costs2) list_capacity_and_costs2)
+  let optimal_capacity (item index list_capacity_and_costs)
+  type "capcity with highest profit: " type optimal_capacity  type " t \n"
+  
+  
+  adjust_company_values
+  
+  ; then we need to adjust the values for this company of how much co2 they store and emit
+  set tons_co2_emitted_this_company (tons_co2_emitted_this_company - optimal_capacity)
+  set tons_co2_stored_this_company (tons_co2_stored_this_company + optimal_capacity)
+  
+  
+  
 end
 
 
-; should return true if we want to build one this year, false if not
-; for now: random
-to-report build_capture_technology?
-  let x random 100
-  ifelse x > 50 
-    [report true]
-    [report false]
+
+
+
+to adjust_company_values
+  
+  
+  
+  
+  
+  
 end
 
+
+
+
+; this value stays constant for the company, so we only need to calculate it once
 to-report calculate_total_co2_produced_by_this_company
   ; calculate the amount of co2 in tons this company creates this year
   set tons_co2_produced_this_company (oil_needed * co2_per_ton_oil)
