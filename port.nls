@@ -4,6 +4,7 @@ ports-own [
   planned_storage_location
   location_name
   location_number
+  location_who
   
   fixed?
   
@@ -27,9 +28,6 @@ to do_port_actions
     
 ;  ]
 
-  
-  build_pipeline
-  ;
 end
 
 
@@ -38,7 +36,7 @@ end
 
 
 ;take one year to build a pipeline from companies to a storage location
-to build_pipeline
+to build_pipeline [capacity]
   
   ; if the port builds a pipeline that year, add the government subsidy to the total subsidy used by port
   ; we need to create a link from every company to the storage location
@@ -104,6 +102,9 @@ to announce_new_storage_location
     setxy max-pxcor - 1 random-ycor
     set size 2
   ]
+  
+  set location_who (max [who] of storages)
+;  type "max who" type location_who type "\n" 
   
 end
 

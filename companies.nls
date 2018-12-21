@@ -15,6 +15,7 @@ companies-own [
   tons_co2_stored_this_company
   tons_co2_emitted_this_company
   
+  optimal_capacity
   
   
   
@@ -26,11 +27,9 @@ companies-own [
 
 
 to do_company_actions
-  
-  ; calculate the amount of co2 in tons this company creates this year
-;  set tons_co2_produced_this_company (oil_needed * co2_per_ton_oil)
  
-  decide_whether_to_join_pipeline
+  ; will besaved in optimal_capacity
+  decide_how_much_capacity_capture_to_build
   
 ;  ifelse join_pipeline? [
 ;    ; do stuff when the company decides to join (we have to create a link with the storage location)
@@ -44,6 +43,35 @@ to do_company_actions
 ;  ]
 ;  
   
+  ; stuff to do if we decided to build a new capture technology
+  ; we dont need to do anything if we dont decide to build something
+  if (optimal_capacity > 0) [
+    
+    ; then we need to adjust the values for this company of how much co2 they store and emit
+    set tons_co2_emitted_this_company (tons_co2_emitted_this_company - optimal_capacity)
+    set tons_co2_stored_this_company (tons_co2_stored_this_company + optimal_capacity)
+    
+    let current_storage (one-of storages with-max [who])
+    
+    ; create a link from this company to the storage location
+    create-pipeline-to current_storage
+    
+;    ask one-of ports [
+;      build_pipeline [optimal_capacity]
+;    ]
+    
+    
+    
+  
+    
+    
+    
+    
+  ]
+  
+  
+    
+  
   
 end
 
@@ -51,7 +79,7 @@ end
 
 ;need to implement some intelligence/decision alg, for now random decision
 ; needs to be decided based on capex, opex with or without capture, internal ROI
-to decide_whether_to_join_pipeline
+to decide_how_much_capacity_capture_to_build
   let available_capacity ([pipeline_capacity_left_to_fill] of one-of ports)
   let opex_storage_costs ([yearly_per_unit_price_CO2_storage] of one-of ports)
   let capex 0
@@ -59,6 +87,7 @@ to decide_whether_to_join_pipeline
   let subsidy 0
   let yearly_saved_fines 0
   let profit 0
+  set optimal_capacity 0
   
  
   
@@ -135,52 +164,35 @@ to decide_whether_to_join_pipeline
   ; we need to take the highest profit. we take the c (capacity) for which that highest profit is reached
   ; after that we can build a capture techology with that optimal capacity
   let index (position (max list_capacity_and_costs2) list_capacity_and_costs2)
-  let optimal_capacity (item index list_capacity_and_costs)
+  set optimal_capacity (item index list_capacity_and_costs)
   type "capcity with highest profit: " type optimal_capacity  type " t \n"
   
   
-  adjust_company_values
-  
-  ; then we need to adjust the values for this company of how much co2 they store and emit
-  set tons_co2_emitted_this_company (tons_co2_emitted_this_company - optimal_capacity)
-  set tons_co2_stored_this_company (tons_co2_stored_this_company + optimal_capacity)
-  
-  
-  
 end
 
 
 
 
 
-to adjust_company_values
-  
-  
-  
-  
-  
-  
-end
 
 
 
-
-; this value stays constant for the company, so we only need to calculate it once
-to-report calculate_total_co2_produced_by_this_company
-  ; calculate the amount of co2 in tons this company creates this year
-  set tons_co2_produced_this_company (oil_needed * co2_per_ton_oil)
-;  show tons_co2_produced_this_company
-  report tons_co2_produced_this_company
-end
-
-to-report calculate_total_co2_emitted_by_this_company
-  set tons_co2_emitted_this_company (tons_co2_produced_this_company - tons_co2_stored_this_company)
-;  show tons_co2_emitted_this_company
-  report tons_co2_emitted_this_company
-end 
-
-; for now no storage --> NEEDS TO BE CHANGED LATER
-to-report calculate_total_co2_stored_by_this_company
-  set tons_co2_stored_this_company 0
-  report tons_co2_stored_this_company
-end
+;; this value stays constant for the company, so we only need to calculate it once
+;to-report calculate_total_co2_produced_by_this_company
+;  ; calculate the amount of co2 in tons this company creates this year
+;  set tons_co2_produced_this_company (oil_needed * co2_per_ton_oil)
+;;  show tons_co2_produced_this_company
+;  report tons_co2_produced_this_company
+;end
+;
+;to-report calculate_total_co2_emitted_by_this_company
+;  set tons_co2_emitted_this_company (tons_co2_produced_this_company - tons_co2_stored_this_company)
+;;  show tons_co2_emitted_this_company
+;  report tons_co2_emitted_this_company
+;end 
+;
+;; for now no storage --> NEEDS TO BE CHANGED LATER
+;to-report calculate_total_co2_stored_by_this_company
+;  set tons_co2_stored_this_company 0
+;  report tons_co2_stored_this_company
+;end
