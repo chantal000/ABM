@@ -10,7 +10,6 @@ companies-own [
   
   
   oil_needed
-  electricity_needed
   
   tons_co2_produced_this_company
   tons_co2_stored_this_company
@@ -53,45 +52,75 @@ end
 ;need to implement some intelligence/decision alg, for now random decision
 ; needs to be decided based on capex, opex with or without capture, internal ROI
 to decide_whether_to_join_pipeline
-  
   let available_capacity ([pipeline_capacity_left_to_fill] of one-of ports)
-  
-  ; we need to calculate the maximum capture capacity that this company could consider this time
-  ; this is limited either by the maximum storage capacity available that this company could build,
-  ; the capacity left to fill in the pipeline or the tons of co2 that this company still emits
-  ; we pick the highest capacity here (numbers to be compared are in t) --> convert to Mt
-  let temp_max_capture_capacity ((min(list available_capacity   tons_co2_emitted_this_company   max_capacity_capture_technology)) / 1000000)
+  let opex_storage_costs ([yearly_per_unit_price_CO2_storage] of one-of ports)
+  let capex 0
+  let opex 0
+  let subsidy 0
+  let yearly_saved_fines 0
+  let profit 0
+ 
   
   let opex_pipeline 0
-  
   ; what happens if its a fixed pipeline
   ifelse [fixed?] of one-of ports 
   [set opex_pipeline (opex_pipeline_fixed)]
   [set opex_pipeline (opex_pipeline_fixed)]
   
   
+  ; we need to calculate the maximum capture capacity that this company could consider this time
+  ; this is limited either by the maximum storage capacity available that this company could build,
+  ; the capacity left to fill in the pipeline or the tons of co2 that this company still emits
+  ; we pick the highest capacity here (numbers to be compared are in t) --> convert to Mt
+  let temp_max_capture_capacity ((min(list available_capacity   tons_co2_emitted_this_company   max_capacity_capture_technology)))
+;  type "temp_max_capture_capacity" type temp_max_capture_capacity  type "\n"
   
-  ; how to decide if its an extensible pipeline
-    ; we create an empty list that will store all the possible capacities for the storage (from 0 to temp_max_capture_capacity)
-    let list_capacity_and_costs []
+  
+  ; we create an empty list that will store all the possible capacities for the storage (from 0 to temp_max_capture_capacity)
+  ; then we add the entry for c=0 --> the cost will be 0 compared to usual, since we do not do anything
+  let list_capacity_and_costs []
+  set list_capacity_and_costs lput (list 0 0) list_capacity_and_costs 
     
-    ;we create a counter variable to keep track of the current capture capacity being tested (value in t)
-    let c 0
+  ;we create a counter variable to keep track of the current capture capacity being tested (value in t)
+  let c 1000000
+;  type "c "type c type "\n"
     
-    ; loop over all the options that are available (in steps of 1 Mt capture capacity)
-    while [c <= temp_max_capture_capacity] [
+  
+  print ""
+  print ""
+  
+  
+  ; loop over all the options that are available (in steps of 1 Mt capture capacity)
+  while [c <= temp_max_capture_capacity] [
       ; capex = connection costs to pipeline (fixed) + capex for the capture technology dependent on capacity required
-      let capex (connection_costs + price_capture_technology_per_ton_co2 * c)
-    type "capex " type capex type "\n"
+      set capex (connection_costs + price_capture_technology_per_ton_co2 * c)
+;     type "capex " type capex type "\n"
     
       ; opex = pipeline usage costs + storage usage costs + price electricty needed to operate capture technology
-      let opex (1)
-      
-      
-      
-      set c (c + 1000000)    ;increase counter by 1 Mt
-    ]
+      set opex (opex_pipeline * c + opex_storage_costs * c +  electricity_price * electricty_needed_per_t_co2 * c)
+;     type "opex " type  opex  type "\n" 
     
+      set subsidy (total_subsidy_companies_per_ton_co2 * c)
+;     type "subsidy " type subsidy type "\n"
+      
+      ; for now we assume companies have no expectation, but instead we will use the current co2 price over all the years
+      set yearly_saved_fines (current_CO2_fine * c)
+;     type "yearly_saved_fines "type yearly_saved_fines type "\n" 
+    
+      set profit (- capex + subsidy + payback_period * (yearly_saved_fines - opex))
+;     type "profit "type profit type "\n" 
+    
+      set list_capacity_and_costs lput (list c profit) list_capacity_and_costs
+;     print list_capacity_and_costs
+    
+    
+;    print ""
+;    print ""
+    
+      set c (c + 1000000)    ;increase counter by 1 Mt
+  ]
+  
+  print list_capacity_and_costs  
 
 end
 

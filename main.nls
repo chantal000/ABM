@@ -26,6 +26,7 @@ globals [
   current_CO2_fine
   total_subsidy_companies_per_ton_co2
   total_subsidy_port
+  electricty_needed_per_t_co2
   
   ;data files
   data_list_co2_fines
@@ -90,6 +91,7 @@ to setup
   set max_oil_demand ((item 1 item 3  data_list_industry) * 1000000)
   set opex_pipeline_extensible (item  1 item 4 data_list_costs)
   set opex_pipeline_fixed (opex_pipeline_extensible * (item  1 item 5 data_list_costs) / 100)
+  set electricty_needed_per_t_co2 (item  1 item 2 data_list_costs)
   
   
   
@@ -148,14 +150,7 @@ to go
   ; runs from 2019 until 2050
   if ticks > 32 [stop]
   
-  ; electricty price set by external environment = old electricty price decreased by 5% per year
-  set electricity_price (electricity_price * 0.95)
   
-  ; maximum capture technology capacity increases by 10% per year
-  set max_capacity_capture_technology (max_capacity_capture_technology * 1.1)
-  
-  ; price for the capture technology decreases every year by 10%
-  set price_capture_technology_per_ton_co2 (price_capture_technology_per_ton_co2 * 0.9)
   
   
   print "total co2 system produced"
@@ -166,7 +161,7 @@ to go
   
   ask governments [do_government_actions]
   ask ports [do_port_actions]
-  ;ask companies [do_company_actions]
+  ask one-of companies [do_company_actions]
   
   
   print ""
@@ -174,6 +169,21 @@ to go
   print ""
   print ""
   
+  type "tick "type ticks type "\n"
+  
+  ; electricty price set by external environment = old electricty price decreased by 5% per year
+  set electricity_price (electricity_price * 0.95)
+  type "electricity_price" type electricity_price type "\n"
+  
+  ; maximum capture technology capacity increases by 10% per year
+  set max_capacity_capture_technology (max_capacity_capture_technology * 1.1)
+  type "max_capacity_capture_technology" type max_capacity_capture_technology type "\n"
+  
+  ; price for the capture technology decreases every year by 10%
+  set price_capture_technology_per_ton_co2 (price_capture_technology_per_ton_co2 * 0.9)
+  type "price_capture_technology_per_ton_co2"type price_capture_technology_per_ton_co2 type "\n"
+  
+
   
   tick
 end
