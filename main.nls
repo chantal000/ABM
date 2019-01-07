@@ -174,7 +174,7 @@ to go
   
   
   if (not [full?] of one-of ports) [
-    ask one-of companies [do_company_actions]
+    ask one-of companies [do_company_actions]  
   ]
   
   
