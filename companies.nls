@@ -28,8 +28,17 @@ companies-own [
 
 to do_company_actions
  
-  ; will be saved in optimal_capacity
-  decide_how_much_capacity_capture_to_build
+  
+  ; WE CHACK IF WE WANT TO BUILD A CAPTURE TECHNOLOGY IF THERE IS CAPACITY LEFT IN THE PIPELINE
+  ifelse (not [completely_full?] of one-of ports) [
+     decide_how_much_capacity_capture_to_build                  ; will be saved in optimal_capacity
+  ]
+  ; if the pipeline is completely full we cannot build anything, so the optimal capacity is 0
+  [
+    set optimal_capacity 0
+  ]
+  
+  
   
 ;  ifelse join_pipeline? [
 ;    ; do stuff when the company decides to join (we have to create a link with the storage location)
@@ -43,45 +52,30 @@ to do_company_actions
 ;  ]
 ;  
   
+  
   ; stuff to do if we decided to build a new capture technology
   ; we dont need to do anything if we dont decide to build something
   if (optimal_capacity > 0) [
     
     ; then we need to adjust the values for this company of how much co2 they store and emit
-    set tons_co2_emitted_this_company (tons_co2_emitted_this_company - optimal_capacity)
-    set tons_co2_stored_this_company (tons_co2_stored_this_company + optimal_capacity)
+;    set tons_co2_emitted_this_company (tons_co2_emitted_this_company - optimal_capacity)
+;    set tons_co2_stored_this_company (tons_co2_stored_this_company + optimal_capacity)
     
     let current_storage (one-of storages with-max [who])
     
     ; create a link from this company to the storage location
     create-pipeline-to current_storage
     
-    
-     
-    
+    ; decrease the amount of available pipeline capacity
+    ; and then check if the pipeline is completely full
     ask one-of ports [
       set pipeline_capacity_left_to_fill (pipeline_capacity_left_to_fill - [optimal_capacity] of myself)
-     
-      ; once the storage has reached the desired capacity, we can open a new storage location
-      if (pipeline_full?) [
-        
-        ; ask all the links that are connected to the filled storage to change color to green
-        ask storage location_who [ask my-in-links[ set color green] ]
-        
-        announce_new_storage_location
-         
-      ] 
+      
+      if (pipeline_capacity_left_to_fill <= 0) [
+        set completely_full? true
+        print "PIPELINE IS COMPLETELY FULL"
+      ]
     ]
-    
-;    ask one-of ports [
-;      build_pipeline [optimal_capacity]
-;    ]
-    
-    
-    
-  
-    
-    
     
     
   ]

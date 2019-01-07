@@ -7,7 +7,7 @@ ports-own [
   location_who
   
   fixed?
-  full?
+  completely_full?                      ; true if there is 0 t left to fill
   
   pipeline_building_costs
   full_pipeline_capacity                ; in t co2 per year
@@ -23,31 +23,39 @@ ports-own [
 
 
 to do_port_actions
-;  if pipeline_full? [
-;    build_pipeline
-;    announce_new_storage_location
+
+  
+  ; once the storage has reached the desired capacity, we can open a new storage location
+  if (pipeline_full?) [
+        
+   ; ask all the links that are connected to the filled storage to change color to green
+     ask storage location_who [
+      
+      ask my-in-links [set color green] 
     
-;  ]
+    
+      ; we then need to adjust the co2 values for the specific companies: 
+      ; the building time of the pipeline will be done in the next year / tick
+      ; so we start storing from the next tick after the pipeline got filled
+      ask in-link-neighbors [   ; the in-link-neighbors are all the companies that joined that pipeline
+        set tons_co2_emitted_this_company (tons_co2_emitted_this_company - optimal_capacity)
+        set tons_co2_stored_this_company (tons_co2_stored_this_company + optimal_capacity)
+    
+      ]
+      
+      
+      
+    
+    ]
+    
+;    
+    
+    
+     announce_new_storage_location
+  ] 
 
 end
 
-
-
-
-
-
-;take one year to build a pipeline from companies to a storage location
-to build_pipeline [capacity]
-  
-  ; if the port builds a pipeline that year, add the government subsidy to the total subsidy used by port
-  ; we need to create a link from every company to the storage location
-  
-;  ask one-of storages [create-pipeline-from one-of companies]
-  
-  
-  
-  
-end
 
 
 
@@ -62,8 +70,16 @@ end
 
 
 to announce_new_storage_location
+  ; increase the counter for next time
+  set location_number (location_number + 1)
+  
+  
+ ; once we reached the location at index 12, we run out of new locations, so we stop running the function
+  if (location_number > 12) [ stop ]
+  
+  
   ; takes the whole row of the file
-  set planned_storage_location item (location_number + 1) data_list_locations
+  set planned_storage_location item (location_number) data_list_locations
   
   
   
@@ -71,8 +87,7 @@ to announce_new_storage_location
   show "new location for storage"
   show location_name
   
-  ; increase the counter for next time
-  set location_number (location_number + 1)
+  
   
   ;pipeline capacity in tons of co2 (not mega tons!)
   set full_pipeline_capacity ((item 3 planned_storage_location) * 1000000)
@@ -80,7 +95,7 @@ to announce_new_storage_location
   
   set pipeline_capacity_left_to_fill (full_pipeline_capacity)
 ;  show pipeline_capacity_left_to_fill
-  set full? false
+  set completely_full? false
   
   ; costs = onshore km * costs per onshore km + offshore km * costs per offshore km
   ; costs are in euros (not million euros!!)
@@ -114,12 +129,11 @@ end
 
 
 ; check if pipeline reached its desired capacity so that we can start building
+; (NOTE: this does not mean that there is 0 capacity left in the pipeline!)
 to-report pipeline_full?
   ifelse (1 - (pipeline_capacity_left_to_fill / full_pipeline_capacity) > (percentage_of_pipeline_filled_needed_to_start_building / 100)) 
-  [ set full? true
-    report true]
-  [ set full? false
-    report false]
+  [ report true]
+  [ report false]
 end
 
 
