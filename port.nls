@@ -7,6 +7,7 @@ ports-own [
   location_who
   
   fixed?
+  full?
   
   pipeline_building_costs
   full_pipeline_capacity                ; in t co2 per year
@@ -79,6 +80,7 @@ to announce_new_storage_location
   
   set pipeline_capacity_left_to_fill (full_pipeline_capacity)
 ;  show pipeline_capacity_left_to_fill
+  set full? false
   
   ; costs = onshore km * costs per onshore km + offshore km * costs per offshore km
   ; costs are in euros (not million euros!!)
@@ -114,8 +116,10 @@ end
 ; check if pipeline reached its desired capacity so that we can start building
 to-report pipeline_full?
   ifelse (1 - (pipeline_capacity_left_to_fill / full_pipeline_capacity) > (percentage_of_pipeline_filled_needed_to_start_building / 100)) 
-  [report true]
-  [report false]
+  [ set full? true
+    report true]
+  [ set full? false
+    report false]
 end
 
 
@@ -132,7 +136,6 @@ end
 
 
 ;price should recover investment of payback period of 15 years
-; for now: random
 to-report decide_co2_storage_price
   
 ;  let temp_subsidy (one-of [total_subsidy_port] of governments)

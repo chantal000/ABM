@@ -158,7 +158,7 @@ end
 
 to go
   ; runs from 2019 until 2050
-  if ticks > 32 [stop]
+  if ticks >= 32 [stop]
   
   
   
@@ -171,7 +171,14 @@ to go
   
   ask governments [do_government_actions]
   ask ports [do_port_actions]
-  ask one-of companies [do_company_actions]
+  
+  
+  if (not [full?] of one-of ports) [
+    ask one-of companies [do_company_actions]
+  ]
+  
+  
+  
   
   
   
@@ -194,7 +201,7 @@ to go
   print ""
   print ""
   print ""
-  print ""
+  print "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 
   
   tick

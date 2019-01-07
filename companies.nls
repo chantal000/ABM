@@ -28,7 +28,7 @@ companies-own [
 
 to do_company_actions
  
-  ; will besaved in optimal_capacity
+  ; will be saved in optimal_capacity
   decide_how_much_capacity_capture_to_build
   
 ;  ifelse join_pipeline? [
@@ -55,6 +55,23 @@ to do_company_actions
     
     ; create a link from this company to the storage location
     create-pipeline-to current_storage
+    
+    
+     
+    
+    ask one-of ports [
+      set pipeline_capacity_left_to_fill (pipeline_capacity_left_to_fill - [optimal_capacity] of myself)
+     
+      ; once the storage has reached the desired capacity, we can open a new storage location
+      if (pipeline_full?) [
+        
+        ; ask all the links that are connected to the filled storage to change color to green
+        ask storage location_who [ask my-in-links[ set color green] ]
+        
+        announce_new_storage_location
+         
+      ] 
+    ]
     
 ;    ask one-of ports [
 ;      build_pipeline [optimal_capacity]
@@ -165,7 +182,7 @@ to decide_how_much_capacity_capture_to_build
   ; after that we can build a capture techology with that optimal capacity
   let index (position (max list_capacity_and_costs2) list_capacity_and_costs2)
   set optimal_capacity (item index list_capacity_and_costs)
-  type "capcity with highest profit: " type optimal_capacity  type " t \n"
+  type "capcity with highest profit: " type optimal_capacity / 1000000  type " Mt \n"
   
   
 end
