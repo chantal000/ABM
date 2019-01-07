@@ -5,6 +5,10 @@ companies-own [
   total_yearly_price_CO2_storage
   total_yearly_price_CO2_emitted
   
+  yearly_price_co2_storage_this_pipeline_fixed
+  
+  
+  
   total_yearly_price_electricity
   total_yearly_CO2_fine
   
@@ -39,27 +43,23 @@ to do_company_actions
   ]
   
   
-  
-;  ifelse join_pipeline? [
-;    ; do stuff when the company decides to join (we have to create a link with the storage location)
-;    ; only join when we it economcally makes sense
-;    ; add costs to industry costs for joining ccs
-;    ; add amount of used subsidy to the total subsidy used by companies
-;  ]
-;  [
-;    ; do stuff when the company does not join
-;    ; increase tons_co2_stored_this_company by the amount that the new technology can store
-;  ]
-;  
+ 
   
   
   ; stuff to do if we decided to build a new capture technology
   ; we dont need to do anything if we dont decide to build something
   if (optimal_capacity > 0) [
     
-    ; then we need to adjust the values for this company of how much co2 they store and emit
-;    set tons_co2_emitted_this_company (tons_co2_emitted_this_company - optimal_capacity)
-;    set tons_co2_stored_this_company (tons_co2_stored_this_company + optimal_capacity)
+    ; increase the cost for the industry to store co2 by the initial building costs
+    set total_system_industry_cost_to_store_co2 (total_system_industry_cost_to_store_co2
+      + connection_costs + price_capture_technology_per_ton_co2 * optimal_capacity      ; capex
+      - total_subsidy_companies_per_ton_co2 * optimal_capacity                          ; subsidy
+    )
+    
+    
+     
+    
+    
     
     let current_storage (one-of storages with-max [who])
     
@@ -76,9 +76,14 @@ to do_company_actions
         print "PIPELINE IS COMPLETELY FULL"
       ]
     ]
-    
-    
   ]
+  
+  
+  ; calculate the yearly cost for the company to store co2
+    set total_yearly_price_CO2_storage (yearly_price_co2_storage_this_pipeline_fixed       ; fixed costs to operate the capture technology and pipeline costs 
+                                       + electricity_price * electricty_needed_per_t_co2 * tons_co2_stored_this_company   ;price electricty needed to operate capture technologies
+     )
+  
   
   
     
@@ -127,7 +132,8 @@ to decide_how_much_capacity_capture_to_build
   set list_capacity_and_costs2 lput 0 list_capacity_and_costs2
     
   ;we create a counter variable to keep track of the current capture capacity being tested (value in t)
-  let c 500000
+  let step_size 10000
+  let c step_size
 ;  type "c "type c type "\n"
     
 ;  
@@ -135,7 +141,7 @@ to decide_how_much_capacity_capture_to_build
 ;  print ""
   
   
-  ; loop over all the options that are available (in steps of 0.5 Mt capture capacity)
+  ; loop over all the options that are available (in steps of  [step size]t capture capacity)
   while [c <= temp_max_capture_capacity] [
       ; capex = connection costs to pipeline (fixed) + capex for the capture technology dependent on capacity required
       set capex (connection_costs + price_capture_technology_per_ton_co2 * c)
@@ -165,7 +171,7 @@ to decide_how_much_capacity_capture_to_build
 ;    print ""
 ;    print ""
     
-      set c (c + 500000)    ;increase counter by 1 Mt
+      set c (c + step_size)    ;increase counter by 1 Mt
   ]
   
   print list_capacity_and_costs  
@@ -178,6 +184,14 @@ to decide_how_much_capacity_capture_to_build
   set optimal_capacity (item index list_capacity_and_costs)
   type "capcity with highest profit: " type optimal_capacity / 1000000  type " Mt \n"
   
+  
+  
+  ; yearly running fixed costs = cost of the new pipeline + costs of the old pipelines
+    set yearly_price_co2_storage_this_pipeline_fixed (yearly_price_co2_storage_this_pipeline_fixed 
+       + opex_pipeline * optimal_capacity           ; pipeline usage costs
+       + opex_storage_costs * optimal_capacity      ; storage usage costs
+    )
+   
   
 end
 

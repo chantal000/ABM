@@ -38,10 +38,10 @@ ticks
 30.0
 
 SLIDER
-19
-67
-193
-100
+18
+43
+192
+76
 number_of_companies
 number_of_companies
 1
@@ -53,10 +53,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-20
-158
-83
-191
+19
+134
+82
+167
 NIL
 setup
 NIL
@@ -70,10 +70,10 @@ NIL
 1
 
 BUTTON
-100
-158
-163
-191
+99
+134
+162
+167
 NIL
 go
 T
@@ -87,10 +87,10 @@ NIL
 1
 
 SLIDER
-20
-102
-239
-135
+19
+78
+238
+111
 yearly_budget_in_millions
 yearly_budget_in_millions
 0
@@ -102,10 +102,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-21
-290
-233
-323
+16
+213
+228
+246
 fraction_subsidy_for_pipeline
 fraction_subsidy_for_pipeline
 0
@@ -117,10 +117,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-22
-328
-199
-361
+17
+251
+194
+284
 percentage_fixed
 percentage_fixed
 0
@@ -132,10 +132,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-178
-158
-241
-191
+177
+134
+240
+167
 NIL
 go
 NIL
@@ -149,30 +149,30 @@ NIL
 1
 
 TEXTBOX
-21
-34
-247
-79
+20
+10
+246
+55
 These values are provided to us, but we can change them here if we want to
 12
 102.0
 1
 
 TEXTBOX
-22
-255
-252
-286
+17
+178
+247
+209
 These are values of which we want to investigate their effect on the outcome
 12
 0.0
 1
 
 SLIDER
-22
-377
-252
-410
+17
+300
+247
+333
 percentage_of_pipeline_filled_needed_to_start_building
 percentage_of_pipeline_filled_needed_to_start_building
 0
@@ -182,6 +182,25 @@ percentage_of_pipeline_filled_needed_to_start_building
 1
 NIL
 HORIZONTAL
+
+PLOT
+9
+354
+277
+504
+CO2 stored and emitted
+time
+t CO2
+0.0
+10.0
+0.0
+10.0
+true
+true
+"" ""
+PENS
+"CO2 emitted" 1.0 0 -2674135 true "" "plot total_system_co2_emitted_to_air"
+"CO2 stored" 1.0 0 -13840069 true "" "plot total_system_co2_stored"
 
 @#$#@#$#@
 @#$#@#$#@
