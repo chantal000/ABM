@@ -33,7 +33,7 @@ companies-own [
 to do_company_actions
  
   
-  ; WE CHACK IF WE WANT TO BUILD A CAPTURE TECHNOLOGY IF THERE IS CAPACITY LEFT IN THE PIPELINE
+  ; WE CHECK IF WE WANT TO BUILD A CAPTURE TECHNOLOGY IF THERE IS CAPACITY LEFT IN THE PIPELINE
   ifelse (not [completely_full?] of one-of ports) [
      decide_how_much_capacity_capture_to_build                  ; will be saved in optimal_capacity
   ]
@@ -46,15 +46,18 @@ to do_company_actions
  
   
   
-  ; stuff to do if we decided to build a new capture technology
+  ; STUFF TO DO IF WE DECIDE TO BUILD A NEW CAPTURE TECHNOLOGY AND JOIN A PIPELINE
   ; we dont need to do anything if we dont decide to build something
   if (optimal_capacity > 0) [
     
-    ; increase the cost for the industry to store co2 by the initial building costs
+    ; increase the cost for the industry to store co2 by the initial building costs (capex)
     set total_system_industry_cost_to_store_co2 (total_system_industry_cost_to_store_co2
       + connection_costs + price_capture_technology_per_ton_co2 * optimal_capacity      ; capex
       - total_subsidy_companies_per_ton_co2 * optimal_capacity                          ; subsidy
     )
+    
+    ; increase the amount subsidies that the government has paid to companies
+    set total_system_subsidy_to_companies (total_system_subsidy_to_companies + total_subsidy_companies_per_ton_co2 * optimal_capacity)
     
     
      
@@ -79,10 +82,15 @@ to do_company_actions
   ]
   
   
-  ; calculate the yearly cost for the company to store co2
+  
+  
+  ;PAY YEARLY COSTS FOR STORAGE AND PIPELINE
+  ;calculate the yearly cost for this company to store co2 
     set total_yearly_price_CO2_storage (yearly_price_co2_storage_this_pipeline_fixed       ; fixed costs to operate the capture technology and pipeline costs 
                                        + electricity_price * electricty_needed_per_t_co2 * tons_co2_stored_this_company   ;price electricty needed to operate capture technologies
      )
+  
+  
   
   
   
@@ -186,7 +194,7 @@ to decide_how_much_capacity_capture_to_build
   
   
   
-  ; yearly running fixed costs = cost of the new pipeline + costs of the old pipelines
+  ; yearly running fixed costs = cost of the new pipeline + costs of the old pipelines (excluding capex)
     set yearly_price_co2_storage_this_pipeline_fixed (yearly_price_co2_storage_this_pipeline_fixed 
        + opex_pipeline * optimal_capacity           ; pipeline usage costs
        + opex_storage_costs * optimal_capacity      ; storage usage costs
@@ -202,22 +210,3 @@ end
 
 
 
-;; this value stays constant for the company, so we only need to calculate it once
-;to-report calculate_total_co2_produced_by_this_company
-;  ; calculate the amount of co2 in tons this company creates this year
-;  set tons_co2_produced_this_company (oil_needed * co2_per_ton_oil)
-;;  show tons_co2_produced_this_company
-;  report tons_co2_produced_this_company
-;end
-;
-;to-report calculate_total_co2_emitted_by_this_company
-;  set tons_co2_emitted_this_company (tons_co2_produced_this_company - tons_co2_stored_this_company)
-;;  show tons_co2_emitted_this_company
-;  report tons_co2_emitted_this_company
-;end 
-;
-;; for now no storage --> NEEDS TO BE CHANGED LATER
-;to-report calculate_total_co2_stored_by_this_company
-;  set tons_co2_stored_this_company 0
-;  report tons_co2_stored_this_company
-;end

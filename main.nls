@@ -61,17 +61,20 @@ end
 to setup 
   clear-all
   reset-ticks
+  file-close-all
+  file-delete "total_system_industry_cost_to_store_co2.csv"
   
   print ""
   print "___________________________________________________________________________"
   print "new set-up"
   
-  ; load all the provided data
+  ; LOAD THE PROVIDED DATA
   load_data
   print "done loading data files"
   
-  ;initialize all the global variables
-  ; all variables are per year and have to be reset at the beginning of every tick
+  ;INITIALIZING THE KPI
+  ; all variables are per year and have to be reset at the beginning of every tick 
+  ;(except total_system_co2_produced since this is constant)
   set total_system_co2_produced 0
   set total_system_co2_emitted_to_air 0
   set total_system_co2_stored 0
@@ -80,12 +83,10 @@ to setup
   set total_system_subsidy_to_companies 0
   set electricty_used 0
   
+  ;INITIALIZING OTHER GLOBAL VARIABLES BASED ON THE PROVIDED DATASETS
 ;  set electricity_price (item  1 item 6 data_list_costs)
   set electricity_price 0
   set co2_per_ton_oil (item 1 item 4 data_list_industry)    ; tons of co2 per ton oil
-  
-  
-  ; needs to changed to the number that will be provided (its not provided??)
   set max_capacity_capture_technology 5 * 1000000      ; t per year
   set price_capture_technology_per_ton_co2 (item  1 item 1 data_list_costs)
   set connection_costs (item 1 item 3 data_list_costs) * 1000000
@@ -99,14 +100,23 @@ to setup
   
   setup-turtles
   
-  ;add up all the amounts of co2 produced and emmited by every company at the beginning of the tick
+  ; INITIALIZE THE STARTING AMOUNT OF CO2 PRODUCED AND EMITTED TO THE AIR
+  ;add up all the amounts of co2 produced and emmited by every company
   ask companies [ 
     set total_system_co2_produced (total_system_co2_produced + tons_co2_produced_this_company)
     set total_system_co2_emitted_to_air (total_system_co2_produced)
   ]
   
+  ask ports [
+    announce_new_storage_location
+  ]
+  
   type "total_system_co2_produced in Mt: " type total_system_co2_produced / 1000000 type "\n"
   type "total_system_co2_emitted_to_air in Mt: " type total_system_co2_emitted_to_air / 1000000 type "\n"
+  
+  ; PREPARE FILES TO STORE DATA
+  
+  
 
   
 end
@@ -119,21 +129,20 @@ to setup-turtles
   set-default-shape capture_technologies "box"
   set-default-shape storages "co2"
   
+  ;CREATE GOVERNMENT AND PORT TURTLES
   ;create one government and one port of rotterdam turtle
-  create-governments 1 [setxy random-xcor random-ycor]
+  create-governments 1 [
+    setxy random-xcor random-ycor
+    hide-turtle                              ;the turtles should be invisible
+  ]
   create-ports 1 [
     setxy random-xcor random-ycor
     set recovery_period 15
-  ]
-  
-  ;the turtles should be invisible
-  ask governments [hide-turtle]
-  ask ports [
     hide-turtle
-    announce_new_storage_location
-;    show item (location_number) data_list_locations
   ]
   
+  
+  ; CREATE THE COMPANIES
   ;create companies
   create-companies number_of_companies [ 
     setxy (0.1 + 0.7 * random max-pxcor) (random-ycor)
@@ -145,7 +154,6 @@ to setup-turtles
     set tons_co2_produced_this_company (oil_needed * co2_per_ton_oil)
     set tons_co2_emitted_this_company (tons_co2_produced_this_company)
     set tons_co2_stored_this_company 0 
-  
   ]
   
   print "ready to go"
@@ -157,6 +165,7 @@ end
 
 
 to go
+  ; CHECK FOR END CONDITION
   ; runs from 2019 until 2050
   if ticks >= 32 [
     PRINT "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
@@ -165,14 +174,6 @@ to go
     stop
   ]
   
-  
-  
-  
-;  print "total co2 system produced"
-;  print total_system_co2_produced
-;  
-;  print "total system co2 emitted"
-;  print total_system_co2_emitted_to_air
   
   ask governments [do_government_actions]
   
@@ -185,19 +186,14 @@ to go
   ]   
   
   
-  if (not [completely_full?] of one-of ports) [
-;    ask one-of companies [do_company_actions]  
+  if (not [completely_full?] of one-of ports) [ 
     ask companies [do_company_actions]  
   ]
   
   
   
   
-  
-  ; increase the given values at the end of the tick
-  
-;  type "tick "type ticks type "\n"
-  
+  ;CHANGE VALUES THAT IN-/DECREASE YEARLY
   ; electricty price set by external environment = old electricty price decreased by 5% per year
   set electricity_price (electricity_price * 0.95)
 ;  type "electricity_price" type electricity_price type "\n"
@@ -212,6 +208,8 @@ to go
   
   
   
+  
+  ;TRACK YEARLY KPI
   ; track the co2 emitted in total and co2 stored at the end of the tick
   ; we first need to set the counters back to 0 before we can start adding them together
   set total_system_co2_emitted_to_air 0
@@ -226,8 +224,15 @@ to go
   ask companies [
     set total_system_industry_cost_to_store_co2 (total_system_industry_cost_to_store_co2 + total_yearly_price_CO2_storage)
   ]
+  file-open "total_system_industry_cost_to_store_co2.csv"
+  file-print csv:to-row (list ticks total_system_industry_cost_to_store_co2)
+  file-close
+  
   set total_system_industry_cost_to_store_co2 0
   
+  set total_system_subsidy_to_pipelines 0
+  set total_system_subsidy_to_companies 0
+
   
   
   print ""
