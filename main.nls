@@ -240,15 +240,12 @@ to go
   ;CHANGE VALUES THAT IN-/DECREASE YEARLY (ENVIRONMENT)
   ; electricty price set by external environment = old electricty price decreased by 5% per year
   set electricity_price (electricity_price * 0.95)
-;  type "electricity_price" type electricity_price type "\n"
   
   ; maximum capture technology capacity increases by 10% per year
   set max_capacity_capture_technology (max_capacity_capture_technology * 1.1)
-;  type "max_capacity_capture_technology" type max_capacity_capture_technology type "\n"
   
   ; price for the capture technology decreases every year by 10%
   set price_capture_technology_per_ton_co2 (price_capture_technology_per_ton_co2 * 0.9)
-;  type "price_capture_technology_per_ton_co2"type price_capture_technology_per_ton_co2 type "\n"
   
   
 
