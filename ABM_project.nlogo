@@ -122,7 +122,7 @@ percentage_fixed
 percentage_fixed
 0
 100
-98.0
+0.0
 1
 1
 NIL
@@ -270,15 +270,15 @@ Circle -16777216 true false 30 30 240
 
 co2
 false
-0
-Circle -13840069 true false 0 0 300
+6
+Circle -13840069 true true 0 0 300
 Circle -16777216 true false 15 15 270
-Circle -13840069 true false 28 88 122
+Circle -13840069 true true 28 88 122
 Rectangle -16777216 true false 105 75 165 225
 Circle -16777216 true false 60 120 60
-Circle -13840069 true false 103 88 122
+Circle -13840069 true true 103 88 122
 Circle -16777216 true false 135 120 60
-Polygon -13840069 true false 210 180 225 165 240 165 255 180 255 195 225 210 255 210 255 225 210 225 210 210 240 195 240 180 225 180 210 180
+Polygon -13840069 true true 210 180 225 165 240 165 255 180 255 195 225 210 255 210 255 225 210 225 210 210 240 195 240 180 225 180 210 180
 
 cow
 false

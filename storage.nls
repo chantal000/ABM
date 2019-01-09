@@ -1,3 +1,39 @@
 storages-own [
   
+  open_to_join?
+  
+  location_name
+  
+  fixed?
+  
+  built?                                ; true if it has been built (meaning companies can start using it to store co2)
+  full_enough?                          ; true if required capacity has been reached
+  completely_full?                      ; true if there is 0 t left to fill
+  
+  
+  full_pipeline_capacity                ; in t co2 per year
+  pipeline_capacity_left_to_fill        ; in t co2 per year
+
+  cost_for_companies_per_t_co2          ; in euro per t co2 per year
+  
 ]
+
+
+
+
+
+; check if pipeline reached its desired capacity so that we can start building
+; (NOTE: this does not mean that there is 0 capacity left in the pipeline!)
+to-report pipeline_full_enough?
+  ifelse (1 - (pipeline_capacity_left_to_fill / full_pipeline_capacity) > (percentage_of_pipeline_filled_needed_to_start_building / 100)) 
+  [ report true]
+  [ report false]
+end
+
+
+to-report decide_if_fixed?
+  ; if our random number is smaller than our specified percentage then it will be a fixed [pipeline, else an extendable one
+  ifelse (random 101 < percentage_fixed) 
+     [report true]
+     [report false]
+end
