@@ -245,7 +245,7 @@ to go
   
   
   
-  ;CHANGE VALUES THAT IN-/DECREASE YEARLY
+  ;CHANGE VALUES THAT IN-/DECREASE YEARLY (ENVIRONMENT)
   ; electricty price set by external environment = old electricty price decreased by 5% per year
   set electricity_price (electricity_price * 0.95)
 ;  type "electricity_price" type electricity_price type "\n"

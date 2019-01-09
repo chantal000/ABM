@@ -3,9 +3,6 @@ __includes[
   "government.nls"
   "port.nls"
   "companies.nls"
-  "infrastructure.nls"
-  "capture_technology.nls"
-  "environment.nls"
   "output_data.nls"
   "storage.nls"
 ]
