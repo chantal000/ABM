@@ -110,7 +110,7 @@ fraction_subsidy_for_pipeline
 fraction_subsidy_for_pipeline
 0
 1
-0.0
+0.5
 0.01
 1
 NIL
@@ -125,7 +125,7 @@ percentage_fixed
 percentage_fixed
 0
 100
-100.0
+98.0
 1
 1
 NIL

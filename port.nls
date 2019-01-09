@@ -28,11 +28,11 @@ to do_port_actions
   ; once the storage has reached the desired capacity, we can open a new storage location
   if (pipeline_full?) [
         
-   ; ask all the links that are connected to the filled storage to change color to green
-     ask storage location_who [
+   
+    ask storage location_who [
       
+      ; ask all the links that are connected to the filled storage to change color to green
       ask my-in-links [set color green] 
-    
     
       ; we then need to adjust the co2 values for the specific companies: 
       ; the building time of the pipeline will be done in the next year / tick
@@ -40,11 +40,10 @@ to do_port_actions
       ask in-link-neighbors [   ; the in-link-neighbors are all the companies that joined that pipeline
         set tons_co2_emitted_this_company (tons_co2_emitted_this_company - optimal_capacity)
         set tons_co2_stored_this_company (tons_co2_stored_this_company + optimal_capacity)
-    
       ]
       
-      
-      
+      ;RECEIVE THE SUBSIDY FOR THE PIPELINE
+      set total_system_subsidy_to_pipelines (total_system_subsidy_to_pipelines + total_subsidy_port)
     
     ]
     
