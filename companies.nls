@@ -178,12 +178,20 @@ to decide_how_much_capacity_capture_to_build
       
       set subsidy (total_subsidy_companies_per_ton_co2 * c)
       ;     type "subsidy " type subsidy type "\n"
-      
+       
       ; for now we assume companies have no expectation, but instead we will use the current co2 price over all the years
-      set yearly_saved_fines (current_CO2_fine * c)
+;      set yearly_saved_fines (current_CO2_fine * c)
+       
+;      type "history_co2_fine: " type history_co2_fine type "\n"
+;      type "range ticks" type range (ticks + 1) type "\n" 
+      let bla4 (map [p -> least-squares (range (ticks + 1)) history_co2_fine (ticks + p + 1)  * c] (range [payback_period] of myself) )
+;      type "bla4" type bla4 type "\n"
+      set yearly_saved_fines (sum ( bla4    ))
+
+      
       ;     type "yearly_saved_fines "type yearly_saved_fines type "\n" 
       
-      set profit (- capex + subsidy + [payback_period] of myself * (yearly_saved_fines - opex))
+      set profit (- capex + subsidy + yearly_saved_fines + [payback_period] of myself * ( - opex))
       ;     type "profit "type profit type "\n" 
       
       set list_capacity_and_costs lput c  list_capacity_and_costs

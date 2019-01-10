@@ -54,6 +54,10 @@ end
 to increase_co2_fine
   set current_co2_fine item 1 item (ticks + 2) data_list_co2_fines
   
+  ; keep track of co2 fine history
+  set history_co2_fine lput current_co2_fine history_co2_fine
+ 
+  
 ;  show "current co2 fine in euro per ton"
 ;  show current_co2_fine
 end

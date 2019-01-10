@@ -42,6 +42,11 @@ globals [
   total_system_industry_cost_to_store_co2
   total_system_subsidy_to_pipelines
   total_system_subsidy_to_companies
+  
+  ; LISTS WITH HISTORIC VALUES
+  history_co2_fine
+  history_max_capacity_capture_technology
+  history_price_capture_technology_per_ton_co2
 ]
 
 
@@ -97,6 +102,9 @@ to setup
   ;INITIALIZING OTHER GLOBAL VARIABLES BASED ON THE PROVIDED DATASETS
 ;  set electricity_price (item  1 item 6 data_list_costs)
   set electricity_price 0
+;  set electricity_price (item  1 item 6 data_list_costs) / 100
+  
+  
   set co2_per_ton_oil (item 1 item 4 data_list_industry)    ; tons of co2 per ton oil
   set max_capacity_capture_technology 5 * 1000000      ; t per year
   set price_capture_technology_per_ton_co2 (item  1 item 1 data_list_costs)
@@ -106,6 +114,14 @@ to setup
   set opex_pipeline_extensible (item  1 item 4 data_list_costs)
   set opex_pipeline_fixed (opex_pipeline_extensible * (item  1 item 5 data_list_costs) / 100)
   set electricty_needed_per_t_co2 (item  1 item 2 data_list_costs)
+  
+  ; INITIALIZE THE HISTORIC LISTS (keep track of the values over time)
+  set history_co2_fine []
+  set history_max_capacity_capture_technology []
+  set history_price_capture_technology_per_ton_co2 []
+  
+  set history_max_capacity_capture_technology lput max_capacity_capture_technology history_max_capacity_capture_technology
+  set history_price_capture_technology_per_ton_co2 lput price_capture_technology_per_ton_co2 history_price_capture_technology_per_ton_co2
   
   
   
@@ -194,10 +210,14 @@ to go
     PRINT "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
     print "NO MORE PIPELINES LEFT TO JOIN; MODEL IS DONE"
     PRINT "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+    print "price capture techn per ton co2"
+    print history_price_capture_technology_per_ton_co2
+    print "max cap capture tech"
+    print history_max_capacity_capture_technology
     stop
   ]   
   
-  ask companies [do_company_actions]  
+  ask one-of companies [do_company_actions]  
   
 
   
@@ -243,9 +263,11 @@ to go
   
   ; maximum capture technology capacity increases by 10% per year
   set max_capacity_capture_technology (max_capacity_capture_technology * 1.1)
+  set history_max_capacity_capture_technology lput max_capacity_capture_technology history_max_capacity_capture_technology
   
   ; price for the capture technology decreases every year by 10%
   set price_capture_technology_per_ton_co2 (price_capture_technology_per_ton_co2 * 0.9)
+  set history_price_capture_technology_per_ton_co2 lput price_capture_technology_per_ton_co2 history_price_capture_technology_per_ton_co2
   
   
 
