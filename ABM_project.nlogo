@@ -92,7 +92,7 @@ yearly_budget_in_millions
 yearly_budget_in_millions
 0
 100
-40.0
+15.0
 5
 1
 NIL
@@ -222,7 +222,7 @@ INPUTBOX
 301
 111
 runs
-2.0
+1.0
 1
 0
 Number

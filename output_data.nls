@@ -43,38 +43,51 @@ to run-x-times
     print "Error: Number of runs must be an integer number"
     stop
   ]
+ 
   
-   
+    
+  type "Current run: "type current_run type "\n"
+  ; do one run (setup and go)
+  setup
+ 
+  
+ set file_name (word "results_runs" runs "_budget" (yearly_budget_in_millions * 1000000) "_fixed" percentage_fixed  
+              "_subsidyPipeline" (fraction_subsidy_for_pipeline * 100) "_startBuilding" 
+                percentage_of_pipeline_filled_needed_to_start_building ".csv")
+ 
+ print file_name  
+  
   
   ; PREPARE FILES TO STORE DATA
   ; delete all old data
   file-close-all
-  file-delete "results.csv"
+  if (file-exists? file_name) [
+    ;file-delete "results.csv"
+    file-delete file_name
+  ]
   
   ;prepare new file
-  file-open "results.csv"
+;  file-open "results.csv"
+  file-open file_name
   file-print csv:to-row (list "Number of runs" runs)
   file-print csv:to-row (list "Yearly Budget in EUR" (yearly_budget_in_millions * 1000000))
   file-print csv:to-row (list "Percentage of fixed pipelines" percentage_fixed)
   file-print csv:to-row (list  "Percentage subsidy to pipeline" (fraction_subsidy_for_pipeline * 100) )
   file-print csv:to-row (list "Percentage of pipeline needed to be filled to start building" percentage_of_pipeline_filled_needed_to_start_building)
   file-print csv:to-row ([])  
-  
-  
-  
-  
   file-print csv:to-row (list "current run" "tick" "total CO2 emitted to air" "total CO2 stored" 
                          "total costs to industry to store CO2" "subsidy paid to pipeline" "subsidy paid to companies"
                          "electricity used")
   file-close
   
   
+
+  
+  
+  
   ; RUN THE FIRST ITERATION
   set current_run 0
-  
-  type "Current run: "type current_run type "\n"
-  ; do one run (setup and go)
-  setup
+
   while [not run_done?] [
       go
    ]
