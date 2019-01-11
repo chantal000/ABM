@@ -24,6 +24,11 @@ end
 
  
 
+
+
+
+
+
 to run-x-times
     
   type "\n" type "\n" type "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NEW SET OF RUNS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" type "\n"
@@ -48,6 +53,16 @@ to run-x-times
   
   ;prepare new file
   file-open "results.csv"
+  file-print csv:to-row (list "Number of runs" runs)
+  file-print csv:to-row (list "Yearly Budget in EUR" (yearly_budget_in_millions * 1000000))
+  file-print csv:to-row (list "Percentage of fixed pipelines" percentage_fixed)
+  file-print csv:to-row (list  "Percentage subsidy to pipeline" (fraction_subsidy_for_pipeline * 100) )
+  file-print csv:to-row (list "Percentage of pipeline needed to be filled to start building" percentage_of_pipeline_filled_needed_to_start_building)
+  file-print csv:to-row ([])  
+  
+  
+  
+  
   file-print csv:to-row (list "current run" "tick" "total CO2 emitted to air" "total CO2 stored" 
                          "total costs to industry to store CO2" "subsidy paid to pipeline" "subsidy paid to companies"
                          "electricity used")
