@@ -22,4 +22,76 @@ to-report least-squares [x y test_x]
   report predicted_y
 end  
 
+ 
+
+to run-x-times
+    
+  type "\n" type "\n" type "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NEW SET OF RUNS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" type "\n"
+  type "Number of runs: "type runs type "\n"
+  
+  if (runs < 1) [
+    print "Error: Number of runs must be at least 1"
+    stop
+  ]
+  
+  if (runs - int runs != 0) [
+    print "Error: Number of runs must be an integer number"
+    stop
+  ]
+  
+   
+  
+  ; PREPARE FILES TO STORE DATA
+  ; delete all old data
+  file-close-all
+  file-delete "results.csv"
+  
+  ;prepare new file
+  file-open "results.csv"
+  file-print csv:to-row (list "current run" "tick" "total CO2 emitted to air" "total CO2 stored" 
+                         "total costs to industry to store CO2" "subsidy paid to pipeline" "subsidy paid to companies"
+                         "electricity used")
+  file-close
+  
+  
+  ; RUN THE FIRST ITERATION
+  set current_run 0
+  
+  type "Current run: "type current_run type "\n"
+  ; do one run (setup and go)
+  setup
+  while [not run_done?] [
+      go
+   ]
+  
+  set current_run 1
+  
+  ; KEEP DOING RUNS UNTIL THE REQUIRED AMOUNT OF RUNS IS REACHED
+  ; for all runs after this we just need to reset the model, not setup new  
+  while [current_run < runs] [
+    type "Current run: "type current_run type "\n"
+    
+    reset
+    
+    
+    ; run go until that specific run is done
+    while [not run_done?] [
+      go
+    ]
+
+     
+    set current_run (current_run + 1)
+    
+  ]
+  
+  PRINT ""
+  print "reached end"
+  
+  stop
+  
+  
+  
+  
+end
+
 

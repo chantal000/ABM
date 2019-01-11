@@ -8,10 +8,10 @@ __includes[
 ]
 @#$#@#$#@
 GRAPHICS-WINDOW
-283
-34
-694
-446
+319
+23
+730
+435
 -1
 -1
 13.0
@@ -50,10 +50,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-19
-134
-82
-167
+91
+133
+154
+166
 NIL
 setup
 NIL
@@ -67,10 +67,10 @@ NIL
 1
 
 BUTTON
-99
-134
-162
-167
+160
+133
+223
+166
 NIL
 go
 T
@@ -92,7 +92,7 @@ yearly_budget_in_millions
 yearly_budget_in_millions
 0
 100
-15.0
+40.0
 5
 1
 NIL
@@ -107,7 +107,7 @@ fraction_subsidy_for_pipeline
 fraction_subsidy_for_pipeline
 0
 1
-0.5
+0.54
 0.01
 1
 NIL
@@ -122,17 +122,17 @@ percentage_fixed
 percentage_fixed
 0
 100
-0.0
+62.0
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-177
-134
-240
-167
+229
+133
+292
+166
 NIL
 go
 NIL
@@ -198,6 +198,34 @@ true
 PENS
 "CO2 emitted" 1.0 0 -2674135 true "" "plot total_system_co2_emitted_to_air"
 "CO2 stored" 1.0 0 -13840069 true "" "plot total_system_co2_stored"
+
+BUTTON
+17
+133
+86
+166
+run x times
+run-x-times
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+INPUTBOX
+251
+51
+301
+111
+runs
+2.0
+1
+0
+Number
 
 @#$#@#$#@
 @#$#@#$#@

@@ -37,7 +37,7 @@ to do_port_actions
       ]
       
       ;RECEIVE THE SUBSIDY FOR THE PIPELINE
-      set total_system_subsidy_to_pipelines (total_system_subsidy_to_pipelines + total_subsidy_port)
+      set total_system_subsidy_to_pipelines (total_system_subsidy_to_pipelines + total_subsidy_port * 1000000)
       
       set built? true
       
@@ -87,8 +87,8 @@ to announce_new_storage_location
     set color grey  ; grey means the location is not yet built
     
     set location_name item 0 [planned_storage_location] of myself
-    type "new location for storage: " type location_name type "\n"
-    
+;    type "new location for storage: " type location_name type "\n"
+     
     ; new storage, so not built yet or full and companies can join the new pipeline
     set built? false
     set full_enough? false
@@ -105,7 +105,7 @@ to announce_new_storage_location
     ; set the pipeline to be fixed or extensible
     set fixed? decide_if_fixed?
     ;  show "fixed?"
-    ifelse fixed? [show "fixed pipeline"] [show "extensible pipeline"]
+;    ifelse fixed? [show "fixed pipeline"] [show "extensible pipeline"]
     
   ]
   
@@ -155,7 +155,7 @@ to decide_co2_storage_price
 ;  show minimial_capacity_to_be_used
   
   set yearly_per_unit_price_CO2_storage (costs_to_recover_per_year / minimial_capacity_to_be_used)
-  type "(port): yearly price per unit co2 in euros:  " type yearly_per_unit_price_CO2_storage  type "\n"
+;  type "(port): yearly price per unit co2 in euros:  " type yearly_per_unit_price_CO2_storage  type "\n"
   
   
   ; set the price to store one ton of co2 inside the capture technology

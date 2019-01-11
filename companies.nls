@@ -53,9 +53,9 @@ to do_company_actions
     
     ; increase the amount subsidies that the government has paid to companies
     set total_system_subsidy_to_companies (total_system_subsidy_to_companies + total_subsidy_companies_per_ton_co2 * optimal_capacity)
-    
-    
      
+    
+      
     
     
     
@@ -81,7 +81,7 @@ to do_company_actions
         set completely_full? true
         set open_to_join? false
         set color red               ; red means nobody can join the pipeline anymore
-        print "PIPELINE IS COMPLETELY FULL"
+;        print "PIPELINE IS COMPLETELY FULL"
       ]
       
       
@@ -108,7 +108,7 @@ to decide_how_much_capacity_capture_to_build
   
   set optimal_capacity 0
   
-  let step_size 50000
+  let step_size 10000
   
   ; list in which for every pipeline that is available the storage number, the profit and the optimal capacity will be stored
   let list_optimal_capacities [] 
@@ -146,6 +146,9 @@ to decide_how_much_capacity_capture_to_build
     ; we pick the highest capacity here (numbers to be compared are in t) --> convert to Mt
     let temp_max_capture_capacity ((min(list pipeline_capacity_left_to_fill   [tons_co2_emitted_this_company] of myself   max_capacity_capture_technology)))
     ;  type "temp_max_capture_capacity" type temp_max_capture_capacity  type "\n"
+    
+ 
+    
   
   
     ; we create an empty list that will store all the possible capacities for the storage (from 0 to temp_max_capture_capacity)
@@ -184,9 +187,10 @@ to decide_how_much_capacity_capture_to_build
        
 ;      type "history_co2_fine: " type history_co2_fine type "\n"
 ;      type "range ticks" type range (ticks + 1) type "\n" 
-      let bla4 (map [p -> least-squares (range (ticks + 1)) history_co2_fine (ticks + p + 1)  * c] (range [payback_period] of myself) )
-;      type "bla4" type bla4 type "\n"
-      set yearly_saved_fines (sum ( bla4    ))
+      
+      ; calculates the predicted co2 prices for all the years in the payback period and multiplies it with the tested capacity
+      ; then we sum them together to calculate how much co2 fines we save in total
+      set yearly_saved_fines (sum ( map [p -> least-squares (range (ticks + 1)) history_co2_fine (ticks + p + 1)  * c] (range [payback_period] of myself)    ))
 
       
       ;     type "yearly_saved_fines "type yearly_saved_fines type "\n" 
@@ -215,23 +219,23 @@ to decide_how_much_capacity_capture_to_build
     ; after that we can choose a capture techology with that optimal capacity
     set index (position (max list_capacity_and_costs2) list_capacity_and_costs2)
     set temp_optimal_capacity (item index list_capacity_and_costs)
-    type "capcity with highest profit: " type temp_optimal_capacity / 1000000  type " Mt \n"
+;    type "capcity with highest profit: " type temp_optimal_capacity / 1000000  type " Mt \n"
     
     ;add the new temp capcity to the list (saves location who, profit, temp optimal capacity)
     set list_optimal_capacities lput max list_capacity_and_costs2 list_optimal_capacities  ;saves profit
     set list_optimal_capacities2 lput (list who temp_optimal_capacity) list_optimal_capacities2  ;saves who and capacity
   ]
      
-  type "list_optimal_capacities: profits: " type list_optimal_capacities type "\n"
-  type "list_optimal_capacities2: whos and capacities: " type list_optimal_capacities2 type "\n"
+;  type "list_optimal_capacities: profits: " type list_optimal_capacities type "\n"
+;  type "list_optimal_capacities2: whos and capacities: " type list_optimal_capacities2 type "\n"
    
   ;after we looped over all the possible pipelines to join, we pick the one with the highest profit for the company
   let max_index (position (max list_optimal_capacities) list_optimal_capacities)  ; index with highest profit
   set optimal_capacity (item 1  item max_index   list_optimal_capacities2  )
   set optimal_who (item 0 item max_index  list_optimal_capacities2 )
   
-  type "optimal_capacity: " type optimal_capacity type "\n"
-  type "optimal_who: " type optimal_who type "\n"
+;  type "optimal_capacity: " type optimal_capacity type "\n"
+;  type "optimal_who: " type optimal_who type "\n"
   
   let opex_pipeline_optimal 0
   ifelse [fixed?] of storage optimal_who [
