@@ -1,9 +1,6 @@
 companies-own [
   payback_period
   
-  total_yearly_price_CO2_storage
-  total_yearly_price_CO2_emitted
-  
   yearly_fixed_costs
   
   oil_needed
@@ -13,11 +10,10 @@ companies-own [
   tons_co2_emitted_this_company
   
   optimal_capacity
-;  optimal_who
 ]
 
 
-
+ 
  
  
 
@@ -94,13 +90,13 @@ to do_company_actions
   ]
   
   
-  
-  ;PAY YEARLY COSTS FOR STORAGE AND PIPELINE
-  ;calculate the yearly cost for this company to store co2 
-  set total_yearly_price_CO2_storage (yearly_fixed_costs       ; fixed costs to operate the capture technology and pipeline costs 
+end
+
+
+to-report calculate_CO2_storage_costs_this_year
+  report (yearly_fixed_costs       ; fixed costs to operate the capture technology and pipeline costs 
     + electricity_price * electricty_needed_per_t_co2 * tons_co2_stored_this_company   ;price electricty needed to operate capture technologies
   )
-  
 end
 
 
