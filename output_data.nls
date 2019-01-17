@@ -34,6 +34,12 @@ to run-x-times
   type "\n" type "\n" type "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NEW SET OF RUNS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" type "\n"
   type "Number of runs: "type runs type "\n"
   
+  if (not is-number? runs)[
+    print "Error: Number of runs must be a number (must be an integer)"
+    stop
+  ]
+     
+  
   if (runs < 1) [
     print "Error: Number of runs must be at least 1"
     stop

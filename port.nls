@@ -1,11 +1,6 @@
 ports-own [
-  yearly_per_unit_price_CO2_storage
-  
-  planned_storage_location
   location_number
   location_who       ; who of the last storage that was built
-  
-  pipeline_building_costs
   
   recovery_period 
   
@@ -13,7 +8,7 @@ ports-own [
  
 
  
- 
+  
 
 to do_port_actions
 
@@ -37,7 +32,7 @@ to do_port_actions
       ]
       
       ;RECEIVE THE SUBSIDY FOR THE PIPELINE
-      set total_system_subsidy_to_pipelines (total_system_subsidy_to_pipelines + total_subsidy_port * 1000000)
+      set total_system_subsidy_to_pipelines (total_system_subsidy_to_pipelines + [total_subsidy_port] of one-of governments * 1000000)
       
       set built? true
       
@@ -76,7 +71,7 @@ to announce_new_storage_location
   if (location_number > 12) [ stop ]
   
   ; takes the whole row of the file
-  set planned_storage_location item (location_number) data_list_locations
+  let planned_storage_location item (location_number) data_list_locations
    
   
   ; potential new location (not yet built)
@@ -116,14 +111,14 @@ to announce_new_storage_location
   ; costs = onshore km * costs per onshore km + offshore km * costs per offshore km
   ; costs are in euros (not million euros!!)
   ; these are the costs the port will need to pay
-  set pipeline_building_costs (    (item 1 planned_storage_location) * ((item 4 planned_storage_location) * 1000000) +
+  let pipeline_building_costs (    (item 1 planned_storage_location) * ((item 4 planned_storage_location) * 1000000) +
                                    (item 2 planned_storage_location) * ((item 5 planned_storage_location) * 1000000))
 ;  show "pipeline building costs in euros"
 ;  show pipeline_building_costs
   
   
   ; set the price that companies need to pay to store 1 t of co2
-  decide_co2_storage_price
+  decide_co2_storage_price (pipeline_building_costs)
   
 end
 
@@ -132,14 +127,14 @@ end
  
 
  
-
+  
 
 
 ;price should recover investment of payback period of 15 years
-to decide_co2_storage_price
+to decide_co2_storage_price [pipeline_building_costs]
   
   ; we assume here the worst case scenario: only one company will join and pay the connection costs
-  let total_cost_to_recover (pipeline_building_costs - connection_costs - total_subsidy_port * 1000000)
+  let total_cost_to_recover (pipeline_building_costs - connection_costs - ([total_subsidy_port] of one-of governments) * 1000000)
 ;  show "total cost to recover in euros"
 ;  show total_cost_to_recover
   
@@ -154,13 +149,13 @@ to decide_co2_storage_price
 ;  show "minimal capacity to be used in tons"
 ;  show minimial_capacity_to_be_used
   
-  set yearly_per_unit_price_CO2_storage (costs_to_recover_per_year / minimial_capacity_to_be_used)
+  let yearly_per_unit_price_CO2_storage (costs_to_recover_per_year / minimial_capacity_to_be_used)
 ;  type "(port): yearly price per unit co2 in euros:  " type yearly_per_unit_price_CO2_storage  type "\n"
   
   
   ; set the price to store one ton of co2 inside the capture technology
   ask storage location_who [
-    set cost_for_companies_per_t_co2 ([yearly_per_unit_price_CO2_storage] of myself)
+    set cost_for_companies_per_t_co2 (yearly_per_unit_price_CO2_storage) ; ([yearly_per_unit_price_CO2_storage] of myself)
   ]
     
     

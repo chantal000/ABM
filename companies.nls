@@ -4,10 +4,7 @@ companies-own [
   total_yearly_price_CO2_storage
   total_yearly_price_CO2_emitted
   
-  yearly_price_co2_storage_this_pipeline_fixed
-  
-  total_yearly_price_electricity
-  total_yearly_CO2_fine
+  yearly_fixed_costs
   
   oil_needed
   
@@ -16,95 +13,96 @@ companies-own [
   tons_co2_emitted_this_company
   
   optimal_capacity
-  optimal_who
+;  optimal_who
 ]
 
 
 
-
-
+ 
+ 
 
 to do_company_actions
- 
+  
   
   ; WE CHECK IF WE WANT TO BUILD A CAPTURE TECHNOLOGY IF THERE IS CAPACITY LEFT ANY OF THE PIPELINES THAT ARE AVAILABLE 
   ; WE CAN JOIN EITHER A NOT FULL EXTENDABLE PIPELINE OR A FIXED ONE IF IT IS NOT YET BUILT
   ifelse (any? storages with [open_to_join?]) [
-     decide_how_much_capacity_capture_to_build                  ; will be saved in optimal_capacity and optimal_who
-  ]
-  ; if we cannot join any pipelines we do not built anything, so the optimal capacity is 0
-  [
-    set optimal_capacity 0
-  ]
-  
-  
- 
-  
-  
-  ; STUFF TO DO IF WE DECIDE TO BUILD A NEW CAPTURE TECHNOLOGY AND JOIN A PIPELINE
-  ; we dont need to do anything if we dont decide to build something
-  if (optimal_capacity > 0) [
-    
-    ; increase the cost for the industry to store co2 by the initial building costs (capex)
-    set total_system_industry_cost_to_store_co2 (total_system_industry_cost_to_store_co2
-      + connection_costs + price_capture_technology_per_ton_co2 * optimal_capacity      ; capex
-      - total_subsidy_companies_per_ton_co2 * optimal_capacity                          ; subsidy
-    )
-    
-    ; increase the amount subsidies that the government has paid to companies
-    set total_system_subsidy_to_companies (total_system_subsidy_to_companies + total_subsidy_companies_per_ton_co2 * optimal_capacity)
+
+    ; function calculates the optimal capacity and optimal location to join    
+    let opt_who (decide_how_much_capacity_capture_to_build) 
      
     
+    ; STUFF TO DO IF WE DECIDE TO BUILD A NEW CAPTURE TECHNOLOGY AND JOIN A PIPELINE
+    ; we dont need to do anything if we dont decide to build something
+    if (optimal_capacity > 0) [
       
-    
-    
-    
-    
-    ; create a link from this company to the storage location
-    create-pipeline-to storage optimal_who
-    
-    
-    
-    ; decrease the amount of available pipeline capacity
-    ; and then check if the pipeline is completely full
-    ask storage optimal_who [
-      set pipeline_capacity_left_to_fill (pipeline_capacity_left_to_fill - [optimal_capacity] of myself)
+      ; increase the cost for the industry to store co2 by the initial building costs (capex)
+      set total_system_industry_cost_to_store_co2 (total_system_industry_cost_to_store_co2
+        + connection_costs + price_capture_technology_per_ton_co2 * optimal_capacity      ; capex
+        - total_subsidy_companies_per_ton_co2 * optimal_capacity                         ; subsidy
+      )
       
-      ; check if the desired capacity is reached
-      if (pipeline_full_enough?) [
-        set full_enough? true
-        set color lime              ; green means the pipeline can still be joined
-      ]
+      ; increase the amount subsidies that the government has paid to companies
+      set total_system_subsidy_to_companies (total_system_subsidy_to_companies + total_subsidy_companies_per_ton_co2 * optimal_capacity)
       
-      if (pipeline_capacity_left_to_fill <= 0) [
-        set full_enough? true
-        set completely_full? true
-        set open_to_join? false
-        set color red               ; red means nobody can join the pipeline anymore
-;        print "PIPELINE IS COMPLETELY FULL"
+      
+      
+      
+      
+      
+      
+      ; create a link from this company to the storage location
+      create-pipeline-to storage opt_who
+      
+      
+      
+      ; decrease the amount of available pipeline capacity
+      ; and then check if the pipeline is completely full
+      ask storage opt_who [
+        set pipeline_capacity_left_to_fill (pipeline_capacity_left_to_fill - [optimal_capacity] of myself)
+        
+        ; check if the desired capacity is reached
+        if (pipeline_full_enough?) [
+          set full_enough? true
+          set color lime              ; green means the pipeline can still be joined
+        ]
+        
+        if (pipeline_capacity_left_to_fill <= 0) [
+          set full_enough? true
+          set completely_full? true
+          set open_to_join? false
+          set color red               ; red means nobody can join the pipeline anymore
+                                      ;        print "PIPELINE IS COMPLETELY FULL"
+        ]
+        
+        
       ]
       
       
     ]
-      
     
+  ]
+  
+  ; if we cannot join any pipelines we do not built anything, so the optimal capacity is 0
+  [
+     set optimal_capacity 0
   ]
   
   
   
   ;PAY YEARLY COSTS FOR STORAGE AND PIPELINE
   ;calculate the yearly cost for this company to store co2 
-    set total_yearly_price_CO2_storage (yearly_price_co2_storage_this_pipeline_fixed       ; fixed costs to operate the capture technology and pipeline costs 
-                                       + electricity_price * electricty_needed_per_t_co2 * tons_co2_stored_this_company   ;price electricty needed to operate capture technologies
-     )
-    
+  set total_yearly_price_CO2_storage (yearly_fixed_costs       ; fixed costs to operate the capture technology and pipeline costs 
+    + electricity_price * electricty_needed_per_t_co2 * tons_co2_stored_this_company   ;price electricty needed to operate capture technologies
+  )
+  
 end
 
- 
+
 
 ;need to implement some intelligence/decision alg, for now random decision
 ; needs to be decided based on capex, opex with or without capture, internal ROI
-to decide_how_much_capacity_capture_to_build
+to-report decide_how_much_capacity_capture_to_build
   
   set optimal_capacity 0
   
@@ -117,9 +115,8 @@ to decide_how_much_capacity_capture_to_build
   
   ;we loop over all the storages that can be joined
   ask storages with [open_to_join?] [
-     
-;     pipeline_capacity_left_to_fill = available capacity
-;     opex_storage_costs = ([yearly_per_unit_price_CO2_storage] of one-of ports)
+    
+    
     let capex 0
     let opex 0
     let subsidy 0
@@ -128,18 +125,18 @@ to decide_how_much_capacity_capture_to_build
     let temp_optimal_capacity 0
     let index 0
     
-
-   
- 
-  
+    
+    
+    
+    
     let opex_pipeline 0
     ; check if it is fixed or not and then set the correct opex for the pipeline
     ifelse fixed? [
       set opex_pipeline (opex_pipeline_fixed)][
       set opex_pipeline (opex_pipeline_extensible)
     ]
-  
-  
+    
+    
     ; we need to calculate the maximum capture capacity that this company could consider this time
     ; this is limited either by the maximum storage capacity available that this company could build,
     ; the capacity left to fill in the pipeline or the tons of co2 that this company still emits
@@ -147,10 +144,10 @@ to decide_how_much_capacity_capture_to_build
     let temp_max_capture_capacity ((min(list pipeline_capacity_left_to_fill   [tons_co2_emitted_this_company] of myself   max_capacity_capture_technology)))
     ;  type "temp_max_capture_capacity" type temp_max_capture_capacity  type "\n"
     
- 
     
-  
-  
+    
+    
+    
     ; we create an empty list that will store all the possible capacities for the storage (from 0 to temp_max_capture_capacity)
     ; then we add the entry for c=0 --> the cost will be 0 compared to usual, since we do not do anything
     let list_capacity_and_costs []
@@ -181,17 +178,17 @@ to decide_how_much_capacity_capture_to_build
       
       set subsidy (total_subsidy_companies_per_ton_co2 * c)
       ;     type "subsidy " type subsidy type "\n"
-       
+      
       ; for now we assume companies have no expectation, but instead we will use the current co2 price over all the years
-;      set yearly_saved_fines (current_CO2_fine * c)
-       
-;      type "history_co2_fine: " type history_co2_fine type "\n"
-;      type "range ticks" type range (ticks + 1) type "\n" 
+      ;      set yearly_saved_fines (current_CO2_fine * c)
+      
+      ;      type "history_co2_fine: " type history_co2_fine type "\n"
+      ;      type "range ticks" type range (ticks + 1) type "\n" 
       
       ; calculates the predicted co2 prices for all the years in the payback period and multiplies it with the tested capacity
       ; then we sum them together to calculate how much co2 fines we save in total
       set yearly_saved_fines (sum ( map [p -> least-squares (range (ticks + 1)) history_co2_fine (ticks + p + 1)  * c] (range [payback_period] of myself)    ))
-
+      
       
       ;     type "yearly_saved_fines "type yearly_saved_fines type "\n" 
       
@@ -210,44 +207,46 @@ to decide_how_much_capacity_capture_to_build
       
       set c (c + step_size)    ;increase counter by 1 Mt
     ]
-   
-;  print list_capacity_and_costs  
-;  print list_capacity_and_costs2
-
- 
+    
+    ;  print list_capacity_and_costs  
+    ;  print list_capacity_and_costs2
+    
+    
     ; we need to take the highest profit. we take the c (capacity) for which that highest profit is reached
     ; after that we can choose a capture techology with that optimal capacity
     set index (position (max list_capacity_and_costs2) list_capacity_and_costs2)
     set temp_optimal_capacity (item index list_capacity_and_costs)
-;    type "capcity with highest profit: " type temp_optimal_capacity / 1000000  type " Mt \n"
+    ;    type "capcity with highest profit: " type temp_optimal_capacity / 1000000  type " Mt \n"
     
     ;add the new temp capcity to the list (saves location who, profit, temp optimal capacity)
     set list_optimal_capacities lput max list_capacity_and_costs2 list_optimal_capacities  ;saves profit
     set list_optimal_capacities2 lput (list who temp_optimal_capacity) list_optimal_capacities2  ;saves who and capacity
   ]
-     
-;  type "list_optimal_capacities: profits: " type list_optimal_capacities type "\n"
-;  type "list_optimal_capacities2: whos and capacities: " type list_optimal_capacities2 type "\n"
-   
+  
+  ;  type "list_optimal_capacities: profits: " type list_optimal_capacities type "\n"
+  ;  type "list_optimal_capacities2: whos and capacities: " type list_optimal_capacities2 type "\n"
+  
   ;after we looped over all the possible pipelines to join, we pick the one with the highest profit for the company
   let max_index (position (max list_optimal_capacities) list_optimal_capacities)  ; index with highest profit
   set optimal_capacity (item 1  item max_index   list_optimal_capacities2  )
-  set optimal_who (item 0 item max_index  list_optimal_capacities2 )
+  let optimal_who (item 0 item max_index  list_optimal_capacities2 )
   
-;  type "optimal_capacity: " type optimal_capacity type "\n"
-;  type "optimal_who: " type optimal_who type "\n"
+  ;  type "optimal_capacity: " type optimal_capacity type "\n"
+  ;  type "optimal_who: " type optimal_who type "\n"
   
   let opex_pipeline_optimal 0
   ifelse [fixed?] of storage optimal_who [
     set opex_pipeline_optimal (opex_pipeline_fixed)][
     set opex_pipeline_optimal (opex_pipeline_extensible)
   ]
-   
+  
   ; yearly running fixed costs = cost of the new pipeline + costs of the old pipelines (excluding capex)
-  set yearly_price_co2_storage_this_pipeline_fixed (yearly_price_co2_storage_this_pipeline_fixed 
-       + opex_pipeline_optimal * optimal_capacity           ; pipeline usage costs
+  set yearly_fixed_costs (yearly_fixed_costs 
+    + opex_pipeline_optimal * optimal_capacity           ; pipeline usage costs
     + [cost_for_companies_per_t_co2] of storage optimal_who * optimal_capacity      ; storage usage costs
-   )
+  )
+  
+  report (optimal_who)
   
 end
 

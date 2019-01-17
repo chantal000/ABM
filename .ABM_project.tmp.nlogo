@@ -5,6 +5,7 @@ __includes[
   "companies.nls"
   "output_data.nls"
   "storage.nls"
+  "environment.nls"
 ]
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -92,7 +93,7 @@ yearly_budget_in_millions
 yearly_budget_in_millions
 0
 100
-40.0
+15.0
 5
 1
 NIL
@@ -149,7 +150,7 @@ TEXTBOX
 20
 10
 246
-55
+33
 These values are provided to us, but we can change them here if we want to
 12
 102.0
@@ -222,7 +223,7 @@ INPUTBOX
 301
 111
 runs
-2.0
+1.0
 1
 0
 Number

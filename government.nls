@@ -1,21 +1,27 @@
 governments-own [
-  
+  total_subsidy_port
 ]
 
 
 to do_government_actions
-  ; decide on subsidy split for that year
-    let new_fraction_subsidy_pipeline (decide_percentage_subsidy_for_pipelines)
+  ; DECIDE ON THE SUBSIDY SPLIT FOR THAT YEAR
+  let new_fraction_subsidy_pipeline (decide_percentage_subsidy_for_pipelines)
     
-    give_subsidy_to_port
-    give_subsidy_to_companies
-    
-    increase_co2_fine
+  ; CALCULATE HOW MUCH SUBSIDY IS AVAILABLE FOR THE PORT
+  give_subsidy_to_port
+  
+  
+  ; CALCULATE HOW MUCH SUBSIDY IS AVAILABLE FOR COMPANIES PER T CO2
+  give_subsidy_to_companies
+  
+   ; INCREASE CURRENT CO2 FINE
+  increase_co2_fine
+
 end
 
 
 
-; for now it is just a fixed variable (set in a slider), but this can be changed later
+
 to-report decide_percentage_subsidy_for_pipelines
 ;  show "fraction subsidy for pipeline"
 ;  show fraction_subsidy_for_pipeline
@@ -33,10 +39,8 @@ to give_subsidy_to_port
 end
 
 
-; we can give the same price for every company or not
-; for now: all money available for companies will be split equally over the companies, 
+; all money available for companies will be split equally over the companies, 
 ; then the companies can decide to use it or not (if not the money will just be unused)
-
 to give_subsidy_to_companies
   ifelse (total_system_co2_emitted_to_air > 0) [
     set total_subsidy_companies_per_ton_co2 (((yearly_budget_in_millions * (1 - fraction_subsidy_for_pipeline) ) / total_system_co2_emitted_to_air) * 1000000)

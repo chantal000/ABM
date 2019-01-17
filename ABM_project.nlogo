@@ -5,6 +5,7 @@ __includes[
   "companies.nls"
   "output_data.nls"
   "storage.nls"
+  "environment.nls"
 ]
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -41,7 +42,7 @@ SLIDER
 76
 number_of_companies
 number_of_companies
-1
+0
 50
 25.0
 1
@@ -149,7 +150,7 @@ TEXTBOX
 20
 10
 246
-55
+37
 These values are provided to us, but we can change them here if we want to
 12
 102.0
