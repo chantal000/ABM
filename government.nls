@@ -1,11 +1,10 @@
 governments-own [
   total_subsidy_port
+  total_subsidy_companies_per_ton_co2
 ]
 
 
 to do_government_actions
-  ; DECIDE ON THE SUBSIDY SPLIT FOR THAT YEAR
-  let new_fraction_subsidy_pipeline (decide_percentage_subsidy_for_pipelines)
     
   ; CALCULATE HOW MUCH SUBSIDY IS AVAILABLE FOR THE PORT
   give_subsidy_to_port
@@ -19,14 +18,6 @@ to do_government_actions
 
 end
 
-
-
-
-to-report decide_percentage_subsidy_for_pipelines
-;  show "fraction subsidy for pipeline"
-;  show fraction_subsidy_for_pipeline
-  report fraction_subsidy_for_pipeline
-end
 
 
 

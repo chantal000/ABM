@@ -28,22 +28,27 @@ to do_company_actions
   ; WE CAN JOIN EITHER A NOT FULL EXTENDABLE PIPELINE OR A FIXED ONE IF IT IS NOT YET BUILT
   ifelse (any? storages with [open_to_join?]) [
 
+    
+    let subsidy_companies ([total_subsidy_companies_per_ton_co2] of one-of governments)
+    
     ; function calculates the optimal capacity and optimal location to join    
-    let opt_who (decide_how_much_capacity_capture_to_build) 
+    let opt_who (decide_how_much_capacity_capture_to_build (subsidy_companies) ) 
      
     
     ; STUFF TO DO IF WE DECIDE TO BUILD A NEW CAPTURE TECHNOLOGY AND JOIN A PIPELINE
     ; we dont need to do anything if we dont decide to build something
     if (optimal_capacity > 0) [
       
+      
+      
       ; increase the cost for the industry to store co2 by the initial building costs (capex)
       set total_system_industry_cost_to_store_co2 (total_system_industry_cost_to_store_co2
         + connection_costs + price_capture_technology_per_ton_co2 * optimal_capacity      ; capex
-        - total_subsidy_companies_per_ton_co2 * optimal_capacity                         ; subsidy
+        - subsidy_companies * optimal_capacity                         ; subsidy
       )
       
       ; increase the amount subsidies that the government has paid to companies
-      set total_system_subsidy_to_companies (total_system_subsidy_to_companies + total_subsidy_companies_per_ton_co2 * optimal_capacity)
+      set total_system_subsidy_to_companies (total_system_subsidy_to_companies + subsidy_companies * optimal_capacity)
       
       
       
@@ -102,7 +107,7 @@ end
 
 ;need to implement some intelligence/decision alg, for now random decision
 ; needs to be decided based on capex, opex with or without capture, internal ROI
-to-report decide_how_much_capacity_capture_to_build
+to-report decide_how_much_capacity_capture_to_build [subsidy_per_unit]
   
   set optimal_capacity 0
   
@@ -176,7 +181,7 @@ to-report decide_how_much_capacity_capture_to_build
       set opex (opex_pipeline * c + cost_for_companies_per_t_co2 * c +  electricity_price * electricty_needed_per_t_co2 * c)
       ;     type "opex " type  opex  type "\n" 
       
-      set subsidy (total_subsidy_companies_per_ton_co2 * c)
+      set subsidy (subsidy_per_unit * c)
       ;     type "subsidy " type subsidy type "\n"
       
       ; for now we assume companies have no expectation, but instead we will use the current co2 price over all the years

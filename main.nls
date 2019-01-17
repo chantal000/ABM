@@ -23,7 +23,7 @@ globals [
   opex_pipeline_extensible                 ; cost to use the pipeline in EUR / t CO2 if extensible
   opex_pipeline_fixed                      ; cost to use the pipeline in EUR / t CO2 if fixed
   current_CO2_fine
-  total_subsidy_companies_per_ton_co2
+;  total_subsidy_companies_per_ton_co2
 ;  total_subsidy_port
   electricty_needed_per_t_co2
   
