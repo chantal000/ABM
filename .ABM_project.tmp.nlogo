@@ -9,10 +9,10 @@ __includes[
 ]
 @#$#@#$#@
 GRAPHICS-WINDOW
-319
-23
-730
-435
+317
+10
+728
+422
 -1
 -1
 13.0
@@ -42,7 +42,7 @@ SLIDER
 76
 number_of_companies
 number_of_companies
-1
+0
 50
 25.0
 1
@@ -89,29 +89,29 @@ SLIDER
 78
 238
 111
-yearly_budget_in_millions
-yearly_budget_in_millions
+yearly_budget
+yearly_budget
 0
-100
-15.0
-5
+100000000
+3.0E7
+5000000
 1
-NIL
+EUR
 HORIZONTAL
 
 SLIDER
 16
 213
-228
+270
 246
-fraction_subsidy_for_pipeline
-fraction_subsidy_for_pipeline
+percentage_subsidy_for_pipeline
+percentage_subsidy_for_pipeline
 0
+100
+1.0
 1
-0.54
-0.01
 1
-NIL
+%
 HORIZONTAL
 
 SLIDER
@@ -126,7 +126,7 @@ percentage_fixed
 62.0
 1
 1
-NIL
+%
 HORIZONTAL
 
 BUTTON
@@ -150,7 +150,7 @@ TEXTBOX
 20
 10
 246
-33
+37
 These values are provided to us, but we can change them here if we want to
 12
 102.0
@@ -169,7 +169,7 @@ These are values of which we want to investigate their effect on the outcome
 SLIDER
 17
 300
-247
+394
 333
 percentage_of_pipeline_filled_needed_to_start_building
 percentage_of_pipeline_filled_needed_to_start_building
@@ -178,7 +178,7 @@ percentage_of_pipeline_filled_needed_to_start_building
 70.0
 1
 1
-NIL
+%
 HORIZONTAL
 
 PLOT

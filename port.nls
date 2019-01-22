@@ -32,7 +32,7 @@ to do_port_actions
       ]
       
       ;RECEIVE THE SUBSIDY FOR THE PIPELINE
-      set total_system_subsidy_to_pipelines (total_system_subsidy_to_pipelines + [total_subsidy_port] of one-of governments * 1000000)
+      set total_system_subsidy_to_pipelines (total_system_subsidy_to_pipelines + [total_subsidy_port] of one-of governments)
       
       set built? true
       
@@ -134,7 +134,7 @@ end
 to decide_co2_storage_price [pipeline_building_costs]
   
   ; we assume here the worst case scenario: only one company will join and pay the connection costs
-  let total_cost_to_recover (pipeline_building_costs - connection_costs - ([total_subsidy_port] of one-of governments) * 1000000)
+  let total_cost_to_recover (pipeline_building_costs - connection_costs - ([total_subsidy_port] of one-of governments))
 ;  show "total cost to recover in euros"
 ;  show total_cost_to_recover
   

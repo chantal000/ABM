@@ -23,8 +23,6 @@ globals [
   opex_pipeline_extensible                 ; cost to use the pipeline in EUR / t CO2 if extensible
   opex_pipeline_fixed                      ; cost to use the pipeline in EUR / t CO2 if fixed
   current_CO2_fine
-;  total_subsidy_companies_per_ton_co2
-;  total_subsidy_port
   electricty_needed_per_t_co2
   
   ;data files
@@ -54,7 +52,7 @@ globals [
   file_name
 ]
  
-
+ 
 ; loads list of all possible locations for storages
 to load_data
   set data_list_co2_fines csv:from-file "co2_price.csv"
@@ -63,13 +61,13 @@ to load_data
   set data_list_industry csv:from-file "industry.csv"
   set data_list_costs csv:from-file "costs.csv"
 end
-
+ 
 
 
 to prepare_file
     ; CREATE FILE NAME
-  set file_name (word "results_runs" runs "_budget" (yearly_budget_in_millions * 1000000) "_fixed" percentage_fixed  
-              "_subsidyPipeline" (fraction_subsidy_for_pipeline * 100) "_startBuilding" 
+  set file_name (word "results_runs" runs "_budget" (yearly_budget) "_fixed" percentage_fixed  
+              "_subsidyPipeline" (percentage_subsidy_for_pipeline) "_startBuilding" 
                 percentage_of_pipeline_filled_needed_to_start_building ".csv")
  
   ; PREPARE FILES TO STORE DATA
@@ -82,9 +80,9 @@ to prepare_file
   ;prepare new file
   file-open file_name
   file-print csv:to-row (list "Number of runs" runs)
-  file-print csv:to-row (list "Yearly Budget in EUR" (yearly_budget_in_millions * 1000000))
+  file-print csv:to-row (list "Yearly Budget in EUR" (yearly_budget))
   file-print csv:to-row (list "Percentage of fixed pipelines" percentage_fixed)
-  file-print csv:to-row (list  "Percentage subsidy to pipeline" (fraction_subsidy_for_pipeline * 100) )
+  file-print csv:to-row (list  "Percentage subsidy to pipeline" (percentage_subsidy_for_pipeline) )
   file-print csv:to-row (list "Percentage of pipeline needed to be filled to start building" percentage_of_pipeline_filled_needed_to_start_building)
   file-print csv:to-row ([])  
   file-print csv:to-row (list "current run" "tick" "total CO2 emitted to air" "total CO2 stored" 
