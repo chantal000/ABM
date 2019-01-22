@@ -50,10 +50,23 @@ to do_company_actions
       
       
       
-      
-      
       ; create a link from this company to the storage location
       create-pipeline-to storage opt_who
+       
+      ; this only applies if a company is joining a storage location that is already built (can only happen for extensible pipelines)
+      ; if the storage location is already in use (meaning it is built), the company can start storing CO2 immediately, 
+      ; else it needs to wait for the port to build the pipeline
+      if ([built?] of storage opt_who) [
+        ask storage opt_who [
+          ask my-in-links [set color green]  ;pipeline is usable immediately
+        ]
+        
+        ; change the amount of CO2 emitted and stored of this company
+        set tons_co2_emitted_this_company (tons_co2_emitted_this_company - optimal_capacity)
+        set tons_co2_stored_this_company (tons_co2_stored_this_company + optimal_capacity)
+      ]
+ 
+      
       
       
       

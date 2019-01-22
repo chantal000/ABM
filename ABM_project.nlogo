@@ -223,7 +223,7 @@ INPUTBOX
 301
 111
 runs
-1.0
+3.0
 1
 0
 Number

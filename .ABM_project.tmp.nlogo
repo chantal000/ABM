@@ -169,13 +169,13 @@ These are values of which we want to investigate their effect on the outcome
 SLIDER
 17
 300
-394
+282
 333
 percentage_of_pipeline_filled_needed_to_start_building
 percentage_of_pipeline_filled_needed_to_start_building
 0
 100
-70.0
+69.0
 1
 1
 %
@@ -223,7 +223,7 @@ INPUTBOX
 301
 111
 runs
-1.0
+3.0
 1
 0
 Number
