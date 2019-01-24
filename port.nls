@@ -99,7 +99,7 @@ to announce_new_storage_location
     
     ; set the pipeline to be fixed or extensible
     set fixed? decide_if_fixed?
-    ;  show "fixed?"
+;      show "fixed?"
 ;    ifelse fixed? [show "fixed pipeline"] [show "extensible pipeline"]
     
   ]
@@ -136,7 +136,7 @@ to decide_co2_storage_price [pipeline_building_costs]
   ; we assume here the worst case scenario: only one company will join and pay the connection costs
   let total_cost_to_recover (pipeline_building_costs - connection_costs - ([total_subsidy_port] of one-of governments))
 ;  show "total cost to recover in euros"
-;  show total_cost_to_recover
+;  show total_cost_to_recover 
   
   ; divide over the 15 years recovery period
   let costs_to_recover_per_year (total_cost_to_recover / recovery_period )

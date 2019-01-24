@@ -150,6 +150,7 @@ to-report decide_how_much_capacity_capture_to_build [subsidy_per_unit]
       set opex_pipeline (opex_pipeline_extensible)
     ]
     
+;    type "opex pipeline" type opex_pipeline type "\n"
     
     ; we need to calculate the maximum capture capacity that this company could consider this time
     ; this is limited either by the maximum storage capacity available that this company could build,
@@ -222,8 +223,8 @@ to-report decide_how_much_capacity_capture_to_build [subsidy_per_unit]
       set c (c + step_size)    ;increase counter by 1 Mt
     ]
     
-    ;  print list_capacity_and_costs  
-    ;  print list_capacity_and_costs2
+;      print list_capacity_and_costs  
+;      print list_capacity_and_costs2
     
     
     ; we need to take the highest profit. we take the c (capacity) for which that highest profit is reached
@@ -237,8 +238,8 @@ to-report decide_how_much_capacity_capture_to_build [subsidy_per_unit]
     set list_optimal_capacities2 lput (list who temp_optimal_capacity) list_optimal_capacities2  ;saves who and capacity
   ]
   
-  ;  type "list_optimal_capacities: profits: " type list_optimal_capacities type "\n"
-  ;  type "list_optimal_capacities2: whos and capacities: " type list_optimal_capacities2 type "\n"
+;    type "list_optimal_capacities: profits: " type list_optimal_capacities type "\n"
+;    type "list_optimal_capacities2: whos and capacities: " type list_optimal_capacities2 type "\n"
   
   ;after we looped over all the possible pipelines to join, we pick the one with the highest profit for the company
   let max_index (position (max list_optimal_capacities) list_optimal_capacities)  ; index with highest profit

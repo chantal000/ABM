@@ -93,7 +93,7 @@ yearly_budget
 yearly_budget
 0
 100000000
-3.0E7
+1.5E7
 5000000
 1
 EUR
@@ -108,7 +108,7 @@ percentage_subsidy_for_pipeline
 percentage_subsidy_for_pipeline
 0
 100
-1.0
+50.0
 1
 1
 %
@@ -123,7 +123,7 @@ percentage_fixed
 percentage_fixed
 0
 100
-62.0
+50.0
 1
 1
 %
@@ -175,7 +175,7 @@ percentage_of_pipeline_filled_needed_to_start_building
 percentage_of_pipeline_filled_needed_to_start_building
 0
 100
-69.0
+70.0
 1
 1
 %
@@ -223,7 +223,7 @@ INPUTBOX
 301
 111
 runs
-3.0
+1.0
 1
 0
 Number
