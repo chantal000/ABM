@@ -29,6 +29,8 @@ to do_port_actions
       ask in-link-neighbors [   ; the in-link-neighbors are all the companies that joined that pipeline
         set tons_co2_emitted_this_company (tons_co2_emitted_this_company - optimal_capacity)
         set tons_co2_stored_this_company (tons_co2_stored_this_company + optimal_capacity)
+        
+        set optimal_capacity 0
       ]
       
       ;RECEIVE THE SUBSIDY FOR THE PIPELINE

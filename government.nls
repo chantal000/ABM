@@ -45,7 +45,7 @@ to give_subsidy_to_companies
 end
 
 
-; sets the new co2 price based on some list of values (right now i just made up some list)
+; sets the new co2 price based on some list of values 
 to increase_co2_fine
   set current_co2_fine item 1 item (ticks + 2) data_list_co2_fines
   
