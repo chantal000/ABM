@@ -3,7 +3,7 @@ __includes[
   "government.nls"
   "port.nls"
   "companies.nls"
-  "output_data.nls"
+  "least_squares.nls"
   "storage.nls"
   "environment.nls"
 ]
@@ -51,10 +51,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-91
-133
-154
-166
+32
+132
+95
+165
 NIL
 setup
 NIL
@@ -68,10 +68,10 @@ NIL
 1
 
 BUTTON
-160
-133
-223
-166
+101
+132
+164
+165
 NIL
 go
 T
@@ -130,10 +130,10 @@ percentage_fixed
 HORIZONTAL
 
 BUTTON
-229
-133
-292
-166
+170
+132
+233
+165
 NIL
 go
 NIL
@@ -199,34 +199,6 @@ true
 PENS
 "CO2 emitted" 1.0 0 -2674135 true "" "plot total_system_co2_emitted_to_air"
 "CO2 stored" 1.0 0 -13840069 true "" "plot total_system_co2_stored"
-
-BUTTON
-17
-133
-86
-166
-run x times
-run-x-times
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-INPUTBOX
-251
-51
-301
-111
-runs
-1.0
-1
-0
-Number
 
 @#$#@#$#@
 @#$#@#$#@
