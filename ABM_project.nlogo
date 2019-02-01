@@ -93,7 +93,7 @@ yearly_budget
 yearly_budget
 0
 100000000
-5000000.0
+0.0
 5000000
 1
 EUR

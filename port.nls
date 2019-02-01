@@ -84,7 +84,6 @@ to announce_new_storage_location
     set color grey  ; grey means the location is not yet built
     
     set location_name item 0 [planned_storage_location] of myself
-;    type "new location for storage: " type location_name type "\n"
      
     ; new storage, so not built yet or full and companies can join the new pipeline
     set built? false
@@ -94,16 +93,11 @@ to announce_new_storage_location
      
     ;pipeline capacity in tons of co2 (not mega tons!)
     set full_pipeline_capacity ((item 3 [planned_storage_location] of myself) * 1000000)
-;    show full_pipeline_capacity
     
     set pipeline_capacity_left_to_fill (full_pipeline_capacity)
-;   show pipeline_capacity_left_to_fill
     
     ; set the pipeline to be fixed or extensible
     set fixed? decide_if_fixed?
-;      show "fixed?"
-;    ifelse fixed? [show "fixed pipeline"] [show "extensible pipeline"]
-    
   ]
   
   ; who of the new storage
@@ -115,8 +109,6 @@ to announce_new_storage_location
   ; these are the costs the port will need to pay
   let pipeline_building_costs (    (item 1 planned_storage_location) * ((item 4 planned_storage_location) * 1000000) +
                                    (item 2 planned_storage_location) * ((item 5 planned_storage_location) * 1000000))
-;  show "pipeline building costs in euros"
-;  show pipeline_building_costs
   
   
   ; set the price that companies need to pay to store 1 t of co2
@@ -135,24 +127,18 @@ end
 ;price should recover investment of payback period of 15 years
 to decide_co2_storage_price [pipeline_building_costs]
   
-  ; we assume here the worst case scenario: only one company will join and pay the connection costs
+  ; we assume here the worst case scenario: only one company will join and pay the connection costs (very risk averse port)
   let total_cost_to_recover (pipeline_building_costs - connection_costs - ([total_subsidy_port] of one-of governments))
-;  show "total cost to recover in euros"
-;  show total_cost_to_recover 
   
   ; divide over the 15 years recovery period
   let costs_to_recover_per_year (total_cost_to_recover / recovery_period )
-;  show "costs to recover per year in euros"
-;  show costs_to_recover_per_year
   
   ; we assume a conservative port: they set the break-even point when exactly the minimum capacity is reached
   ; everythings else will be profit
   let minimial_capacity_to_be_used ([full_pipeline_capacity] of storage location_who * percentage_of_pipeline_filled_needed_to_start_building / 100)
-;  show "minimal capacity to be used in tons"
-;  show minimial_capacity_to_be_used
+
   
   let yearly_per_unit_price_CO2_storage (costs_to_recover_per_year / minimial_capacity_to_be_used)
-;  type "(port): yearly price per unit co2 in euros:  " type yearly_per_unit_price_CO2_storage  type "\n"
   
   
   ; set the price to store one ton of co2 inside the capture technology

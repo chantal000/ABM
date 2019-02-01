@@ -32,7 +32,7 @@ end
 
 
 to-report decide_if_fixed?
-  ; if our random number is smaller than our specified percentage then it will be a fixed [pipeline, else an extendable one
+  ; if our random number is smaller than our specified percentage then it will be a fixed pipeline, else an extendable one
   ifelse (random 101 < percentage_fixed) 
      [report true]
      [report false]
