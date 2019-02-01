@@ -93,7 +93,7 @@ yearly_budget
 yearly_budget
 0
 100000000
-0.0
+1.0E7
 5000000
 1
 EUR
@@ -123,7 +123,7 @@ percentage_fixed
 percentage_fixed
 0
 100
-50.0
+0.0
 1
 1
 %

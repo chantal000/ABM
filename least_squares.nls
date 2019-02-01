@@ -1,0 +1,23 @@
+; inputs: x (list of all x seen), y (list of all y), test_x (x for which we want to know new y) 
+; outputs: the predicted y for the tested x
+to-report least-squares [x y test_x]
+  ; see https://www.mathsisfun.com/data/least-squares-regression.html
+ 
+  ; if we only have one value, we cannot predict anything, so we just return the given y value
+  if (length x <= 1) [
+    report one-of y    
+  ]
+  
+  
+  let sum_xsquare (sum (map [i -> i * i] x))
+  let sum_xy (sum (map * x y))
+  
+  let N (length x)
+  
+  let m  ( (N * sum_xy - sum x * sum y) / (N * sum_xsquare - (sum x) ^ 2 ))
+  let b ((sum y - m * sum x) / N)
+  
+  let predicted_y ( m * test_x + b)
+  
+  report predicted_y
+end  
